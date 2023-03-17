@@ -7,7 +7,7 @@ function drawScreen() {
 function drawMiniMap() {
     ctxMap.fillStyle = "green";
     ctxMap.fillRect(0, 0, WIDTH, HEIGHT);
-    drawVectorRect(WIDTH/2, HEIGHT/2, new Vector(-playerList[0].directionVector.x, playerList[0].directionVector.y), [8*worldScale,5000*worldScale], "gray");
+    drawVectorRect(WIDTH/2, HEIGHT/2, new Vector(-playerList[0].directionVector.x, playerList[0].directionVector.y), [8*WORLDSCALE,5000*WORLDSCALE], "gray");
     playerList[0].drawToMiniMap();
 }
 

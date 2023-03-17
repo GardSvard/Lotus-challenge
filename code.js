@@ -1,21 +1,25 @@
 'use strict';
+
 let canvasGfx = document.getElementById("canvasGfx");
 let canvasMap = document.getElementById("canvasMap");
 let preOutput = document.getElementById("preOutput");
 let buttonRun = document.getElementById("buttonRun");
 let buttonReset = document.getElementById("buttonReset");
+
 let ctx = canvasGfx.getContext("2d");
 ctx.imageSmoothingEnabled = false; //turns off antialiasing
+
 let ctxMap = canvasMap.getContext("2d");
+
 const WIDTH = ctx.canvas.width;
 const HEIGHT = ctx.canvas.height;
 
-const worldScale = 15;
-const fps = 60;
-const hz = 1/fps;
+const WORLDSCALE = 15;
+const FPS = 60;
+const HZ = 1/FPS;
 
 let playerList = [
-    new Player(WIDTH/(2*worldScale), HEIGHT/(2*worldScale),'ongelsk')
+    new Player(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE), 5, 'ongelsk')
 ];
 
 let keyPresses = {
@@ -39,16 +43,15 @@ document.onkeyup = function(event) {
 }
 
 function update() {
-
     for (let i = 0; i < playerList.length; i++) {
         playerList[i].update();
     }
+
     drawScreen();
     drawMiniMap();
 }
 
 function loop() {
-    
     if (buttonPressed == true) { //pause under the game window
         update();
     }
