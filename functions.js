@@ -1,14 +1,90 @@
 'use strict';
 
 function drawScreen() {
+    //draws the main screen
 
 }
 
 function drawMiniMap() {
+    //draws the minimap
     ctxMap.fillStyle = "green";
     ctxMap.fillRect(0, 0, WIDTH, HEIGHT);
-    drawVectorRect(WIDTH/2, HEIGHT/2, new Vector(-playerList[0].directionVector.x, playerList[0].directionVector.y), [8*WORLDSCALE,5000*WORLDSCALE], "gray");
+    
+    let roadSegmentList = [
+        {
+            pos   : new Vector(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE) - 50),
+            vector: new Vector(0,-1)
+        },
+        {
+            pos   : new Vector(WIDTH/(2*WORLDSCALE) + 50, HEIGHT/(2*WORLDSCALE) - 50),
+            vector: new Vector(1,-1)
+        }
+    ]
+
+    let renderDistance = 100; //100 meters
+
+    for (let i = 0; i < roadSegmentList.length; i++) {
+        if (
+            Math.abs(roadSegmentList[i].pos.x - playerList[0].x) < renderDistance &&
+            Math.abs(roadSegmentList[i].pos.y - playerList[0].y) < renderDistance
+            ) {
+
+            drawRelativeVectorRect(
+                playerList[0], 
+                roadSegmentList[i].pos, 
+                roadSegmentList[i].vector, 
+                [8*WORLDSCALE,100*WORLDSCALE], 
+                'gray'
+            );
+
+            drawRelativeVectorRect(
+                playerList[0], 
+                roadSegmentList[i].pos, 
+                roadSegmentList[i].vector, 
+                [0.2*WORLDSCALE, 3*WORLDSCALE], 
+                'yellow'
+            );
+        } 
+    }
+
+    let stoneCenterPos = new Vector(WIDTH/(2*WORLDSCALE) - 10, HEIGHT/(2*WORLDSCALE) - 20);
+    let stoneRadius = 2;
+    drawRelativeCircle(playerList[0], stoneCenterPos, stoneRadius, 'black');
+
     playerList[0].drawToMiniMap();
+}
+
+function drawRelativeVectorRect(player, centerVector, directionVectorOriginal, size, color) {
+    let directionVector = Vector.copy(directionVectorOriginal);
+    let diffVector = Vector.subtract( 
+        centerVector,
+        new Vector(player.x, player.y)
+    );
+    diffVector.rotate2d(player.directionVector.angle);
+    directionVector.rotate2d(player.directionVector.angle);
+
+    drawVectorRect(WIDTH/2 - diffVector.x*WORLDSCALE, HEIGHT/2 - diffVector.y*WORLDSCALE, 
+        directionVector, 
+        size, 
+        color
+    );
+}
+
+function drawRelativeCircle(player, centerVector, size, color) {
+    let diffVector = Vector.subtract( 
+        centerVector,
+        new Vector(player.x, player.y)
+    );
+    diffVector.rotate2d(player.directionVector.angle);
+
+    ctxMap.fillStyle = color;
+    ctxMap.beginPath();
+    ctxMap.arc(
+        WIDTH/2 - diffVector.x*WORLDSCALE, 
+        HEIGHT/2 - diffVector.y*WORLDSCALE,
+        size*WORLDSCALE, 0, 2*Math.PI
+    );
+    ctxMap.fill();
 }
 
 function drawVectorRect(centerX, centerY, directionVector, size, color) {
@@ -43,3 +119,4 @@ function drawVectorRect(centerX, centerY, directionVector, size, color) {
        ctxMap.closePath();
        ctxMap.fill();
 }
+

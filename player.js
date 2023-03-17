@@ -8,11 +8,14 @@ class Player extends Car {
         this.y = y;
         this.speed = 0;
         this.directionVector = new Vector(0, -30);
+        this.impulseVector = new Vector(100,0);
+
         this.accelerationTop = 5;
         this.accelerationTop2 = this.accelerationTop ** 2;
         this.brakeForce = 10;
         this.drawTopDown = drawTopDown; //draws top down info if true
         this.mapSize = [2 * WORLDSCALE, 4 * WORLDSCALE]; //2 * 4 meters on screen
+        this.impulseVector = new Vector(0,0);
         this.controlDict = {
             turnLeft    : 'a',
             turnRight   : 'd',
@@ -25,10 +28,58 @@ class Player extends Car {
     drawToMiniMap() {
         ctxMap.fillStyle = "black";
         ctxMap.fillRect(WIDTH / 2 - this.mapSize[0] / 2, HEIGHT / 2 - this.mapSize[1] / 2, this.mapSize[0], this.mapSize[1]);
-        ctxMap.beginPath();
-        ctxMap.moveTo(WIDTH / 2, HEIGHT / 2);
-        ctxMap.lineTo(WIDTH / 2 - this.directionVector.x * this.speed, HEIGHT / 2 - this.directionVector.y * this.speed);
-        ctxMap.stroke();
-        ctxMap.closePath();
     }    
+
+    update() {
+
+        //code for inertial impulse after a crash
+        this.#x += this.impulseVector.x*HZ;
+        this.#y += this.impulseVector.y*HZ;
+
+        let impulseStop = 2;
+        this.impulseVector.scale(0.8);
+        if (this.impulseVector.length < impulseStop)
+
+        if (this.speed > 0) { //prevents turning if car is stationary
+            let turn = (
+                keyPresses[this.controlDict.turnRight] - 
+                keyPresses[this.controlDict.turnLeft]
+            )*Math.PI/100;
+            // console.log(keyPresses[this.controlDict.turnLeft])
+            this.directionVector.rotate2d(turn);
+        }
+
+        let acc = (
+            keyPresses[this.controlDict.goForwards] 
+        )*this.acceleration(this.speed);
+        
+        this.speed += acc;
+
+        if (keyPresses[this.controlDict.goBackwards]) {
+            this.speed -= this.deceleration();
+        }
+        
+        preOutput.innerHTML = this.speed;
+        preOutput.innerHTML += "\nx: " + Math.round(this.x*100)/100 + "\ty: " + Math.round(this.y*100)/100;
+
+        let velocityVector = Vector.normalize(this.directionVector);
+        velocityVector.scale(this.speed);
+        
+        this.#x += velocityVector.x*HZ;
+        this.#y += velocityVector.y*HZ;
+    }
+
+    acceleration(speed) {
+        //f(x) = sqrt(acceleration^2 - (x/10)^2)
+        let temp = this.accelerationTop2 - (speed/12)**2;
+        if (temp > 0) {
+            return Math.sqrt(temp)*HZ;
+        } else {return 0;}
+    }
+
+    deceleration() {
+        if (this.speed - this.brakeForce*HZ < 0) {
+            return this.speed;
+        } else {return this.brakeForce*HZ;}
+    }
 }
