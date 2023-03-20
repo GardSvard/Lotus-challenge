@@ -1,17 +1,20 @@
 'use strict';
 
 class Player extends Car {
-    constructor(x, y, size, spriteSheet, speed, directionVector, accelerationTop, accelerationTop2, drawTopDown = false) {
-        super(x, y, size, spriteSheet, speed, directionVector, accelerationTop, accelerationTop2);
+    constructor(x, y,
+            spriteSheet, size = 5,
+            speed = 0, directionVector = new Vector(0, -30),
+            accelerationTop = 5, accelerationTop2 = accelerationTop ** 2,
+            drawTopDown = false) {
+
+        super(x, y, size, 
+            spriteSheet,
+            speed, directionVector,
+            accelerationTop, accelerationTop2);
         
         this.x = x;
         this.y = y;
-        this.speed = 0;
-        this.directionVector = new Vector(0, -30);
-        this.impulseVector = new Vector(100,0);
 
-        this.accelerationTop = 5;
-        this.accelerationTop2 = this.accelerationTop ** 2;
         this.brakeForce = 10;
         this.drawTopDown = drawTopDown; //draws top down info if true
         this.mapSize = [2 * WORLDSCALE, 4 * WORLDSCALE]; //2 * 4 meters on screen
@@ -33,8 +36,8 @@ class Player extends Car {
     update() {
 
         //code for inertial impulse after a crash
-        this.#x += this.impulseVector.x*HZ;
-        this.#y += this.impulseVector.y*HZ;
+        this.x += this.impulseVector.x*HZ;
+        this.y += this.impulseVector.y*HZ;
 
         let impulseStop = 2;
         this.impulseVector.scale(0.8);
@@ -65,8 +68,8 @@ class Player extends Car {
         let velocityVector = Vector.normalize(this.directionVector);
         velocityVector.scale(this.speed);
         
-        this.#x += velocityVector.x*HZ;
-        this.#y += velocityVector.y*HZ;
+        this.x += velocityVector.x*HZ;
+        this.y += velocityVector.y*HZ;
     }
 
     acceleration(speed) {
