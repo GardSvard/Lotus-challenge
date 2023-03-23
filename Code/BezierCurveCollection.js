@@ -102,17 +102,17 @@ let p4 = new Vector(0, -3);
 let bez = new CubicBezier(p1, p2, p3, p4, 15);
 
 
-const ctx = document.getElementById("canvasGfx").getContext("2d");
-const WIDTH = ctx.canvas.width;
-const HEIGHT = ctx.canvas.height;
+// const ctx = document.getElementById("canvasGfx").getContext("2d");
+// const WIDTH = ctx.canvas.width;
+// const HEIGHT = ctx.canvas.height;
 
-let bezColl = new BezierCurveCollection(bez);
+// let bezColl = new BezierCurveCollection(bez);
 
 
-let P = new Vector(0, 2);
-console.log(bezColl.approxDistToCurrent(P));
+// let P = new Vector(0, 2);
+// console.log(bezColl.approxDistToCurrent(P));
 
-bezColl.renderCurrent();
+// bezColl.renderCurrent();
 // bez.drawCurve();
 // bez.drawConrolPoints();
 
