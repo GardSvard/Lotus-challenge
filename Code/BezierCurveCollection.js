@@ -4,7 +4,7 @@ class BezierCurveCollection {
 
     cubicBezList;
     scale;
-    currentLastIndex ;
+    currentLastIndex;
     renderDist;
     maxTheta;
 
@@ -23,7 +23,7 @@ class BezierCurveCollection {
     renderCurrent() {
         // ctx.clearRect(0, 0, WIDTH, HEIGHT);
         for (let x = 0; x < this.renderDist; x++) {
-            let i = x+(this.currentLastIndex-(this.renderDist-1));
+            let i = x+(this.cubicBezList.length-1-(this.renderDist));
             let bez = this.cubicBezList[i];
             bez.drawCurve();
             bez.drawConrolPoints();
@@ -31,7 +31,7 @@ class BezierCurveCollection {
     }
 
     addSection() {
-        let lastBez = this.cubicBezList[this.currentLastIndex];
+        let lastBez = this.cubicBezList[this.cubicBezList.length-1];
         let lastBezC = lastBez.C;
         let lastBezD = lastBez.D;
         let CDVector = Vector.subtract(lastBezD, lastBezC);
@@ -61,12 +61,11 @@ class BezierCurveCollection {
 
     approxDistToCurrent(P, sampleSize=5) {
 
-        let minDist = this.cubicBezList[(this.currentLastIndex-(this.renderDist-1))].approxDist(P, sampleSize);
+        let minDist = this.cubicBezList[(this.cubicBezList.length-1-(this.renderDist))].approxDist(P, sampleSize);
         for (let x = 1; x < this.renderDist; x++) {
-            let i = x+(this.currentLastIndex-(this.renderDist-1));
+            let i = x+(this.cubicBezList.length-1-(this.renderDist));
             let dist = this.cubicBezList[i].approxDist(P, sampleSize);
             minDist = Math.min(minDist, dist);
-            console.log(dist);
         }
 
         return(minDist);
@@ -76,7 +75,7 @@ class BezierCurveCollection {
         let tangentsObjList = [];
 
         for (let x = 0; x < this.renderDist; x++) {
-            let i = x+(this.currentLastIndex-(this.renderDist-1));
+            let i = x+(this.cubicBezList.length-1-(this.renderDist));
             let bez = this.cubicBezList[i];
             for (let m = 0; m<sampleSize; m++) {
                 let t = m/sampleSize;
@@ -96,11 +95,11 @@ class BezierCurveCollection {
 }
 
 
-let p1 = new Vector(1, 1);
-let p2 = new Vector(2, 3);
-let p3 = new Vector(3, 3);
-let p4 = new Vector(4, 2);
-let bez = new CubicBezier(p1, p2, p3, p4, 40);
+let p1 = new Vector(0, 0);
+let p2 = new Vector(0, -1);
+let p3 = new Vector(0, -2);
+let p4 = new Vector(0, -3);
+let bez = new CubicBezier(p1, p2, p3, p4, 15);
 
 
 const ctx = document.getElementById("canvasGfx").getContext("2d");
@@ -110,11 +109,11 @@ const HEIGHT = ctx.canvas.height;
 let bezColl = new BezierCurveCollection(bez);
 
 
-// let P = new Vector(0, 0);
-// console.log(bezColl.approxDistToCurrent(P));
+let P = new Vector(0, 2);
+console.log(bezColl.approxDistToCurrent(P));
 
-// bezColl.renderCurrent();
-bez.drawCurve();
-bez.drawConrolPoints();
+bezColl.renderCurrent();
+// bez.drawCurve();
+// bez.drawConrolPoints();
 
-// console.log(bezColl.getPointTangents(5, true));
+//console.log(bezColl.getPointTangents(5));
