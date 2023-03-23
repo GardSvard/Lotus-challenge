@@ -98,7 +98,6 @@ class CubicBezier {
             let dist =  Vector.subtract(this.getPoint(t), P).length;
             minDist = Math.min(minDist, dist);
         }
-
         return(minDist);
     }
 }

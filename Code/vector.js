@@ -280,11 +280,11 @@ class Vector {
         this.#y = x*Math.sin(theta) + y*Math.cos(theta);
     }
 
-    static rotate2d(x, y, theta) { //tar en liste med koordinater
-        let nx = x*Math.cos(theta) - y*Math.sin(theta);
-        let ny = x*Math.sin(theta) + y*Math.cos(theta);
-        let vec = new Vector(nx, ny);
-        return vec;
+    static rotate2d(vector, theta) { //tar en liste med koordinater
+        let nx = vector.x*Math.cos(theta) - vector.y*Math.sin(theta);
+        let ny = vector.x*Math.sin(theta) + vector.y*Math.cos(theta);
+        let newVector = new Vector(nx, ny);
+        return newVector;
     }
 
     angleDiff2d(vector) {
