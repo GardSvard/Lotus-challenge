@@ -66,6 +66,7 @@ class BezierCurveCollection {
             let i = x+(this.currentLastIndex-(this.renderDist-1));
             let dist = this.cubicBezList[i].approxDist(P, sampleSize);
             minDist = Math.min(minDist, dist);
+            console.log(dist);
         }
 
         return(minDist);
@@ -113,7 +114,7 @@ let bezColl = new BezierCurveCollection(bez);
 // console.log(bezColl.approxDistToCurrent(P));
 
 // bezColl.renderCurrent();
-// bez.drawCurve();
-// bez.drawConrolPoints();
+bez.drawCurve();
+bez.drawConrolPoints();
 
 // console.log(bezColl.getPointTangents(5, true));
