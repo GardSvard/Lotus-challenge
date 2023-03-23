@@ -10,6 +10,9 @@ function drawMiniMap() {
     ctxMap.fillStyle = "green";
     ctxMap.fillRect(0, 0, WIDTH, HEIGHT);
     
+    let testList = bezColl.getPointTangents(5);
+    console.log(testList);
+
     let roadSegmentList = [
         {
             pos   : new Vector(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE) - 50),
@@ -33,7 +36,7 @@ function drawMiniMap() {
                 playerList[0], 
                 roadSegmentList[i].pos, 
                 roadSegmentList[i].vector, 
-                [8*WORLDSCALE,100*WORLDSCALE], 
+                [8*WORLDSCALE,15*WORLDSCALE], 
                 'gray'
             );
 

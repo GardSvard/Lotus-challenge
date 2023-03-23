@@ -19,7 +19,7 @@ const FPS = 60;
 const HZ = 1/FPS; 
 
 let playerList = [
-    new Player(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE), "ongelsk")
+    new Player(0, 0, "ongelsk")
 ];
 
 let keyPresses = {
