@@ -132,19 +132,32 @@ class Vector {
 
     toString() {
         let s = "[" + this.x + ", " + this.y;
-        if (this.z != Null) s += ", " + this.z;
+        if (this.z != null) s += ", " + this.z;
         s += "]";
         return s;
     }
 
     static toString(x, y, z = null) {
         let s = "[" + x + ", " + y;
-        if (z != Null) s += ", " + z;
+        if (z != null) s += ", " + z;
         s += "]";
         return s;
     }
 
     static copy(vector) {
+        return new Vector(vector.x, vector.y, vector.z);
+    }
+
+    static addMultiple(vList) {
+        let v1 = vList[0];
+        let nV = Vector.copyVector(v1);
+        for (let i=1; i<vList.length; i++) {
+            v1.add(vList[i]);
+        }
+        return(v1);
+    }
+
+    static copyVector(vector) {
         return new Vector(vector.x, vector.y, vector.z);
     }
 
@@ -179,7 +192,7 @@ class Vector {
         let x = left.x - right.x;
         let y = left.y - right.y;
         if (left.dimension != right.dimension) {
-            throw "The vectors you are trying to add do not have the same dimensions";
+            throw "The vectors you are trying to subtract do not have the same dimensions";
         } else if (left.dimension == 3) {
             let z = left.z - right.z;
             return new Vector(x, y, z);
@@ -190,7 +203,7 @@ class Vector {
         this.#x -= vector.x;
         this.#y -= vector.y;
         if (this.dimension != vector.dimension) {
-            throw "The vectors you are trying to add do not have the same dimensions";
+            throw "The vectors you are trying to subtract do not have the same dimensions";
         } else if (this.dimension == 3) this.#z -= vector.z;
     }
     
@@ -205,8 +218,14 @@ class Vector {
         }
     }
 
-    static scale(vector, scalar) {
-        return new Vector(vector.x*scalar, vector.y*scalar, vector.z*scalar);
+    static scale(scalar, vector) {
+        let x = vector.x*scalar;
+        let y = vector.y*scalar;
+        if (vector.z != null) {
+            let z = vector.z*scalar;
+            return(new Vector(x, y, z));
+        }
+        return(new Vector(x, y))
     }
 
     divide(dividend) {
@@ -264,7 +283,8 @@ class Vector {
     static rotate2d(x, y, theta) { //tar en liste med koordinater
         let nx = x*Math.cos(theta) - y*Math.sin(theta);
         let ny = x*Math.sin(theta) + y*Math.cos(theta);
-        return [nx, ny];
+        let vec = new Vector(nx, ny);
+        return vec;
     }
 
     angleDiff2d(vector) {
