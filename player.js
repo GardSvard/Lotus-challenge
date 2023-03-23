@@ -1,61 +1,43 @@
 'use strict';
 
-class Player {
+class Player extends Car {
+    constructor(x, y,
+            spriteSheet, size = 5,
+            speed = 0, directionVector = new Vector(0, -30),
+            accelerationTop = 5, accelerationTop2 = accelerationTop ** 2,
+            drawTopDown = false) {
 
-    #x;
-    #y;
-    
-    constructor(x, y, spriteSheet, drawTopDown = false) {
-        this.#x = x;
-        this.#y = y;
-        this.directionVector = new Vector(0,-30);
-        this.speed = 0;
-
-        this.impulseVector = new Vector(100,0);
+        super(x, y, size, 
+            spriteSheet,
+            speed, directionVector,
+            accelerationTop, accelerationTop2);
         
-        this.accelerationTop = 5;
-        this.accelerationTop2 = this.accelerationTop**2; 
+        this.x = x;
+        this.y = y;
 
         this.brakeForce = 10;
-
-        this.spriteSheet = spriteSheet;
-
+        this.drawTopDown = drawTopDown; //draws top down info if true
+        this.mapSize = [2 * WORLDSCALE, 4 * WORLDSCALE]; //2 * 4 meters on screen
+        this.impulseVector = new Vector(0,0);
         this.controlDict = {
             turnLeft    : 'a',
             turnRight   : 'd',
             goForwards  : 'w',
             goBackwards : 's'
         }
-
-        // drawing top down info
-        this.drawTopDown = drawTopDown; //bool
-        this.mapSize = [2*WORLDSCALE, 4*WORLDSCALE];
-         //2*4 meters on screen
     }
 
-    get x() {
-        return this.#x;
-    }
-
-    get y() {
-        return this.#y;
-    }
-
+    //draws car as black rectangle with a line pointing up at all times
     drawToMiniMap() {
         ctxMap.fillStyle = "black";
         ctxMap.fillRect(WIDTH / 2 - this.mapSize[0] / 2, HEIGHT / 2 - this.mapSize[1] / 2, this.mapSize[0], this.mapSize[1]);
-        // ctxMap.beginPath();
-        // ctxMap.moveTo(WIDTH / 2, HEIGHT / 2);
-        // ctxMap.lineTo(WIDTH / 2 - this.directionVector.x * this.speed, HEIGHT / 2 + this.directionVector.y * this.speed);
-        // ctxMap.stroke();
-        ctxMap.closePath();
     }    
 
     update() {
 
         //code for inertial impulse after a crash
-        this.#x += this.impulseVector.x*HZ;
-        this.#y += this.impulseVector.y*HZ;
+        this.x += this.impulseVector.x*HZ;
+        this.y += this.impulseVector.y*HZ;
 
         let impulseStop = 2;
         this.impulseVector.scale(0.8);
@@ -86,8 +68,8 @@ class Player {
         let velocityVector = Vector.normalize(this.directionVector);
         velocityVector.scale(this.speed);
         
-        this.#x += velocityVector.x*HZ;
-        this.#y += velocityVector.y*HZ;
+        this.x += velocityVector.x*HZ;
+        this.y += velocityVector.y*HZ;
     }
 
     acceleration(speed) {
