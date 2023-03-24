@@ -7,12 +7,14 @@ class BezierCurveCollection {
     currentLastIndex;
     renderDist;
     maxTheta;
+    passedCurrent;
 
     constructor(curve1) {
         this.cubicBezList = [curve1];
         this.currentLastIndex = 0;
         this.renderDist = 3;
         this.maxTheta = 1.5;
+        passedCurrent = false;
         this.scale=curve1.scale;
         for (let i=0; i<this.renderDist; i++) {
             this.nextSection();
@@ -90,6 +92,14 @@ class BezierCurveCollection {
         }
         
         return(tangentsObjList);
+    }
+
+    updatePassed(position) {
+        currentBez = this.cubicBezList[this.cubicBezList.length-1-this.renderDist];
+        if (currentBez.hasPassed(position) != this.passedCurrent) {
+            this.nextSection();
+            this.passedCurrent = currentBez.hasPassed(position);
+        }
     }
 
 }

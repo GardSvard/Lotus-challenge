@@ -40,12 +40,7 @@ class CubicBezier {
     }
 
     getTangent(t, draw = false) {
-        // let P =     (-this.A+3*this.B-3*this.C+this.D)*Math.pow(t, 3)
-        //             + (3*this.A-6*this.B+3*this.C)*Math.pow(t, 2)
-        //             + (-3*this.A+3*this.B)*t
-        //             + (this.A);
 
-        
         let tangent = Vector.scale(0.3, Vector.addMultiple([
                                     (Vector.scale((3*Math.pow(t, 2)), Vector.addMultiple([Vector.scale(-1, this.A), Vector.scale(3, this.B), Vector.scale(-3, this.C), Vector.copyVector(this.D)]))),
                                     (Vector.scale((2*t), Vector.addMultiple([Vector.scale(3, this.A), Vector.scale(-6, this.B), Vector.scale(3, this.C)]))),
@@ -99,6 +94,17 @@ class CubicBezier {
             minDist = Math.min(minDist, dist);
         }
         return(minDist);
+    }
+
+    hasPassed(position) {
+        let passed = false;
+        let tan = this.getTangent(1);
+        let a = tan.y/tan.x;
+        let b = -tan.x*a;
+        if (position.y > (position.x * a) + b) {
+            passed = true;
+        }
+        return(passed);
     }
 }
 
