@@ -46,6 +46,7 @@ function update() {
     for (let i = 0; i < playerList.length; i++) {
         playerList[i].update();
     }
+    bezColl.updatePassed(new Vector(playerList[0].x, playerList[0].y));
 
     drawScreen();
     drawMiniMap();
