@@ -10,40 +10,42 @@ function drawMiniMap() {
     ctxMap.fillStyle = "green";
     ctxMap.fillRect(0, 0, WIDTH, HEIGHT);
     
-    let testList = bezColl.getPointTangents(5);
-    console.log(testList);
+    let roadSegmentList = bezColl.getPointTangents(15);
 
-    let roadSegmentList = [
-        {
-            pos   : new Vector(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE) - 50),
-            vector: new Vector(0,-1)
-        },
-        {
-            pos   : new Vector(WIDTH/(2*WORLDSCALE) + 50, HEIGHT/(2*WORLDSCALE) - 50),
-            vector: new Vector(1,-1)
-        }
-    ]
+    // let roadSegmentList = [
+    //     {
+    //         point  : new Vector(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE) - 50),
+    //         tangent: new Vector(0,-1)
+    //     },
+    //     {
+    //         point  : new Vector(WIDTH/(2*WORLDSCALE) + 50, HEIGHT/(2*WORLDSCALE) - 50),
+    //         tangent: new Vector(1,-1)
+    //     }
+    // ]
 
-    let renderDistance = 100; //100 meters
+    let renderDistance = 250; //100 meters
+    let roadSegmentLength = 15; //everything is given in meters
+    let roadSegmentWidth = 8;
 
     for (let i = 0; i < roadSegmentList.length; i++) {
+
         if (
-            Math.abs(roadSegmentList[i].pos.x - playerList[0].x) < renderDistance &&
-            Math.abs(roadSegmentList[i].pos.y - playerList[0].y) < renderDistance
+            Math.abs(roadSegmentList[i].point.x - playerList[0].x) < renderDistance &&
+            Math.abs(roadSegmentList[i].point.y - playerList[0].y) < renderDistance
             ) {
 
             drawRelativeVectorRect(
                 playerList[0], 
-                roadSegmentList[i].pos, 
-                roadSegmentList[i].vector, 
-                [8*WORLDSCALE,15*WORLDSCALE], 
+                roadSegmentList[i].point, 
+                roadSegmentList[i].tangent, 
+                [roadSegmentWidth*WORLDSCALE, roadSegmentLength*WORLDSCALE], 
                 'gray'
             );
 
             drawRelativeVectorRect(
                 playerList[0], 
-                roadSegmentList[i].pos, 
-                roadSegmentList[i].vector, 
+                roadSegmentList[i].point, 
+                roadSegmentList[i].tangent, 
                 [0.2*WORLDSCALE, 3*WORLDSCALE], 
                 'yellow'
             );
@@ -123,3 +125,14 @@ function drawVectorRect(centerX, centerY, directionVector, size, color) {
        ctxMap.fill();
 }
 
+//code for drawing the primary screen (not minimap)
+
+function drawGameScreen() {
+
+    let background = {
+        image : new Image()
+    }
+    background.image.src = "./spriteSheets/backgroundDay.png";
+
+    ctx.drawImage(background.image, 0, 0);
+}

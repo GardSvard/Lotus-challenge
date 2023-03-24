@@ -7,13 +7,15 @@ class BezierCurveCollection {
     currentLastIndex;
     renderDist;
     maxTheta;
+    pointScalar;
 
     constructor(curve1) {
         this.cubicBezList = [curve1];
         this.currentLastIndex = 0;
-        this.renderDist = 3;
+        this.renderDist = 10;
         this.maxTheta = 1.5;
         this.scale=curve1.scale;
+        this.pointScalar = 15;
         for (let i=0; i<this.renderDist; i++) {
             this.nextSection();
         }
@@ -80,9 +82,10 @@ class BezierCurveCollection {
             for (let m = 0; m<sampleSize; m++) {
                 let t = m/sampleSize;
                 let P = bez.getPoint(t);
+                P.scale(this.pointScalar); //scales up the points for smoother and bigger road
                 let tangent = bez.getTangent(t, draw);
                 let tangentObject = {
-                    point: P,
+                    point: P, 
                     tangent: tangent
                 };
                 tangentsObjList.push(tangentObject);
@@ -96,9 +99,9 @@ class BezierCurveCollection {
 
 
 let p1 = new Vector(0, 0);
-let p2 = new Vector(0, -1);
-let p3 = new Vector(0, -2);
-let p4 = new Vector(0, -3);
+let p2 = new Vector(0, -5);
+let p3 = new Vector(0, -10);
+let p4 = new Vector(0, -15);
 let bez = new CubicBezier(p1, p2, p3, p4, 15);
 
 
@@ -106,7 +109,7 @@ let bez = new CubicBezier(p1, p2, p3, p4, 15);
 // const WIDTH = ctx.canvas.width;
 // const HEIGHT = ctx.canvas.height;
 
-// let bezColl = new BezierCurveCollection(bez);
+let bezColl = new BezierCurveCollection(bez);
 
 
 // let P = new Vector(0, 2);

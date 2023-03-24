@@ -14,7 +14,7 @@ let ctxMap = canvasMap.getContext("2d");
 const WIDTH = ctx.canvas.width;
 const HEIGHT = ctx.canvas.height;
 
-const WORLDSCALE = 15;
+const WORLDSCALE = 5;
 const FPS = 60;
 const HZ = 1/FPS; 
 
