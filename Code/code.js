@@ -79,3 +79,11 @@ buttonReset.onclick = function() {reset();}
 let started = false;
 let buttonPressed = false;
 // reset();
+
+let p1 = new Vector(0, 0);
+let p2 = new Vector(0, -5);
+let p3 = new Vector(0, -10);
+let p4 = new Vector(0, -15);
+let bez = new CubicBezier(p1, p2, p3, p4, 15);
+
+let bezColl = new BezierCurveCollection(bez);
