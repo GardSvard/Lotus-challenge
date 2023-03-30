@@ -13,7 +13,7 @@ class BezierCurveCollection {
     constructor(curve1) {
         this.cubicBezList = [curve1];
         this.currentLastIndex = 0;
-        this.renderDist = 3;
+        this.renderDist = 10;
         this.maxTheta = 1.5;
         this.passedCurrent = false;
         this.scale=curve1.scale;

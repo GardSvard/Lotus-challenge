@@ -14,9 +14,12 @@ let ctxMap = canvasMap.getContext("2d");
 const WIDTH = ctx.canvas.width;
 const HEIGHT = ctx.canvas.height;
 
-const WORLDSCALE = 5;
+const WORLDSCALE = 5; //scales up from meters to pixels, lower number, more zoomed out
 const FPS = 60;
 const HZ = 1/FPS; 
+const FOV = 90;
+const FOVradians = (FOV/180)*Math.PI;
+
 
 let playerList = [
     new Player(0, 0, "ongelsk")

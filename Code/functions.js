@@ -2,6 +2,12 @@
 
 function drawScreen() {
     //draws the main screen
+    let background = {
+        image : new Image()
+    }
+    background.image.src = "./spriteSheets/backgroundDay.png";
+
+    ctx.drawImage(background.image, 0, 0);
 
 }
 
@@ -125,14 +131,3 @@ function drawVectorRect(centerX, centerY, directionVector, size, color) {
        ctxMap.fill();
 }
 
-//code for drawing the primary screen (not minimap)
-
-function drawGameScreen() {
-
-    let background = {
-        image : new Image()
-    }
-    background.image.src = "./spriteSheets/backgroundDay.png";
-
-    ctx.drawImage(background.image, 0, 0);
-}
