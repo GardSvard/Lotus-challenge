@@ -13,9 +13,9 @@ class BezierCurveCollection {
     constructor(curve1) {
         this.cubicBezList = [curve1];
         this.currentLastIndex = 0;
-        this.renderDist = 10;
+        this.renderDist = 2;
         this.maxTheta = 1.5;
-        this.passedCurrent = false;
+        this.passedCurrent = curve1.hasPassed(new Vector(0, 0));
         this.scale=curve1.scale;
         this.pointScalar = 15;
         for (let i=0; i<this.renderDist; i++) {
@@ -99,27 +99,23 @@ class BezierCurveCollection {
 
     updatePassed(position) {
         let currentBez = this.cubicBezList[this.cubicBezList.length-1-this.renderDist];
+        console.log(currentBez.hasPassed(position), this.passedCurrent);
         if (currentBez.hasPassed(position) != this.passedCurrent) {
+            console.log("tetss");
             this.nextSection();
-            this.passedCurrent = currentBez.hasPassed(position);
+            this.passedCurrent = this.cubicBezList[this.cubicBezList.length-this.renderDist].hasPassed(position);
         }
     }
 
 }
 
 
-let p1 = new Vector(0, 0);
-let p2 = new Vector(0, -5);
-let p3 = new Vector(0, -10);
-let p4 = new Vector(0, -15);
-let bez = new CubicBezier(p1, p2, p3, p4, 15);
-
 
 // const ctx = document.getElementById("canvasGfx").getContext("2d");
 // const WIDTH = ctx.canvas.width;
 // const HEIGHT = ctx.canvas.height;
 
-let bezColl = new BezierCurveCollection(bez);
+
 
 
 // let P = new Vector(0, 2);
