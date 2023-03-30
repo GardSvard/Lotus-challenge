@@ -95,22 +95,28 @@ class CubicBezier {
         return(minDist);
     }
 
-    hasPassed(position, draw=false) {
+    hasPassed(position, pointScalar, draw=false) {
+        let margin = 5;
         let passed = false;
         let normal = Vector.rotate2d(this.getTangent(1), Math.PI/2);
-        let point = Vector.scale(WORLDSCALE*2.75, this.getPoint(1));
+        let point = Vector.scale(pointScalar, this.getPoint(1));
+        // console.log(position.y);
+        // console.log(point.y);
         if (normal.x != 0) {
             let a = normal.y/normal.x;
             let b = point.y-point.x*a;
             if (position.y > (position.x * a) + b) {
-                passed = true;
+                if ((point.x-position.x)*(point.x-position.x)+(point.y-position.y)*(point.y-position.y) <= margin*margin) {
+                    passed = true;
+                }
             }
         }  else {
             if (position.y > (point.y)) {
-                passed = true;
+                if ((point.x-position.x)*(point.x-position.x)+(point.y-position.y)*(point.y-position.y) <= margin*margin) {
+                    passed = true;
+                }
             }
         }
-
         
 
         return(passed);
