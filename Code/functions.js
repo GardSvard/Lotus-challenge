@@ -58,6 +58,12 @@ function drawMiniMap() {
         } 
     }
 
+    let plantsArr = bezColl.getPlants();
+    for (let i = 0; i < plantsArr.length; i++) {
+        let plant = plantsArr[i];
+        drawRelativeCircle(playerList[0], plant.position, plant.size, plant.color);
+    }
+
     let stoneCenterPos = new Vector(WIDTH/(2*WORLDSCALE) - 10, HEIGHT/(2*WORLDSCALE) - 20);
     let stoneRadius = 2;
     drawRelativeCircle(playerList[0], stoneCenterPos, stoneRadius, 'black');

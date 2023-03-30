@@ -14,6 +14,7 @@ class CubicBezier {
         this.C = C;
         this.D = D;
         this.scale = scale;
+        this.plants = this.createPlants();
     }
 
     getPoint(t, draw = false) {
@@ -121,6 +122,26 @@ class CubicBezier {
 
         return(passed);
     }
+
+    createPlants() {
+        let plantsArr = [];
+        let plantsN = 10
+        for (let m = 0; m<plantsN; m++) {
+            let t = m/plantsN;
+            let P = Vector.scale(15, this.getPoint(t));
+            let normal = Vector.rotate2d(this.getTangent(t), Math.PI/2);
+            normal.normalize();
+            let randomFloat = Math.random()*2-1;
+            let direction = randomFloat/Math.abs(randomFloat);
+            console.log(direction);
+            normal.scale(((randomFloat*20*direction)+15)*direction);
+            let plantPost =Vector.add(P, normal);
+            let newPlant = new Plant(plantPost);
+            plantsArr.push(newPlant);
+        }
+        return(plantsArr);
+    }
+
 }
 
 

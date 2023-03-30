@@ -97,6 +97,16 @@ class BezierCurveCollection {
         return(tangentsObjList);
     }
 
+    getPlants() {
+        let plantsArr = [];
+        for (let x = 0; x < this.renderDist; x++) {
+            let i = x+(this.cubicBezList.length-1-(this.renderDist));
+            let bez = this.cubicBezList[i];
+            plantsArr.push(...bez.plants);
+        }
+        return(plantsArr);
+    }
+
     updatePassed(position) {
         let currentBez = this.cubicBezList[this.cubicBezList.length-this.renderDist];
         if (currentBez.hasPassed(position, this.pointScalar) != this.passedCurrent) {
