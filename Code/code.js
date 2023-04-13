@@ -20,6 +20,7 @@ const HZ = 1/FPS;
 const FOV = 90;
 const FOVradians = (FOV/180)*Math.PI;
 
+const pointScalar = 15;
 
 let playerList = [
     new Player(0, 0, "ongelsk")

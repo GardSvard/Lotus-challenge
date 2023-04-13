@@ -96,7 +96,7 @@ class CubicBezier {
         return(minDist);
     }
 
-    hasPassed(position, pointScalar, draw=false) {
+    hasPassed(position, draw=false) {
         let margin = 5;
         let passed = false;
         let normal = Vector.rotate2d(this.getTangent(1), Math.PI/2);
@@ -128,12 +128,11 @@ class CubicBezier {
         let plantsN = 10
         for (let m = 0; m<plantsN; m++) {
             let t = m/plantsN;
-            let P = Vector.scale(15, this.getPoint(t));
+            let P = Vector.scale(pointScalar, this.getPoint(t));
             let normal = Vector.rotate2d(this.getTangent(t), Math.PI/2);
             normal.normalize();
             let randomFloat = Math.random()*2-1;
             let direction = randomFloat/Math.abs(randomFloat);
-            console.log(direction);
             normal.scale(((randomFloat*20*direction)+15)*direction);
             let plantPost =Vector.add(P, normal);
             let newPlant = new Plant(plantPost);
