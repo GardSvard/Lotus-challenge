@@ -19,6 +19,12 @@ function loop() {
 
 function drawScreen() {
     //draws the main screen
+    let background = {
+        image : new Image()
+    }
+    background.image.src = "./spriteSheets/backgroundDay.png";
+
+    ctx.drawImage(background.image, 0, 0);
 
 }
 
@@ -27,41 +33,52 @@ function drawMiniMap() {
     ctx.fillStyle = "green";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
     
-    let roadSegmentList = [
-        {
-            pos   : new Vector(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE) - 50),
-            vector: new Vector(0,-1)
-        },
-        {
-            pos   : new Vector(WIDTH/(2*WORLDSCALE) + 50, HEIGHT/(2*WORLDSCALE) - 50),
-            vector: new Vector(1,-1)
-        }
-    ]
+    let roadSegmentList = bezColl.getPointTangents(15);
 
-    let renderDistance = 100; //100 meters
+    // let roadSegmentList = [
+    //     {
+    //         point  : new Vector(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE) - 50),
+    //         tangent: new Vector(0,-1)
+    //     },
+    //     {
+    //         point  : new Vector(WIDTH/(2*WORLDSCALE) + 50, HEIGHT/(2*WORLDSCALE) - 50),
+    //         tangent: new Vector(1,-1)
+    //     }
+    // ]
+
+    let renderDistance = 250; //100 meters
+    let roadSegmentLength = 15; //everything is given in meters
+    let roadSegmentWidth = 8;
 
     for (let i = 0; i < roadSegmentList.length; i++) {
+
         if (
-            Math.abs(roadSegmentList[i].pos.x - playerList[0].x) < renderDistance &&
-            Math.abs(roadSegmentList[i].pos.y - playerList[0].y) < renderDistance
+            Math.abs(roadSegmentList[i].point.x - playerList[0].x) < renderDistance &&
+            Math.abs(roadSegmentList[i].point.y - playerList[0].y) < renderDistance
             ) {
 
             drawRelativeVectorRect(
                 playerList[0], 
-                roadSegmentList[i].pos, 
-                roadSegmentList[i].vector, 
-                [8*WORLDSCALE,100*WORLDSCALE], 
+                roadSegmentList[i].point, 
+                roadSegmentList[i].tangent, 
+                [roadSegmentWidth*WORLDSCALE, roadSegmentLength*WORLDSCALE], 
                 'gray'
             );
 
             drawRelativeVectorRect(
                 playerList[0], 
-                roadSegmentList[i].pos, 
-                roadSegmentList[i].vector, 
+                roadSegmentList[i].point, 
+                roadSegmentList[i].tangent, 
                 [0.2*WORLDSCALE, 3*WORLDSCALE], 
                 'yellow'
             );
         } 
+    }
+
+    let plantsArr = bezColl.getPlants();
+    for (let i = 0; i < plantsArr.length; i++) {
+        let plant = plantsArr[i];
+        drawRelativeCircle(playerList[0], plant.position, plant.size, plant.color);
     }
 
     let stoneCenterPos = new Vector(WIDTH/(2*WORLDSCALE) - 10, HEIGHT/(2*WORLDSCALE) - 20);

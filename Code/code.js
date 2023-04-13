@@ -9,9 +9,13 @@ ctx.imageSmoothingEnabled = false; //turns off antialiasing
 const WIDTH = ctx.canvas.width;
 const HEIGHT = ctx.canvas.height;
 
-const WORLDSCALE = 15;
+const WORLDSCALE = 5; //scales up from meters to pixels, lower number, more zoomed out
 const FPS = 60;
 const HZ = 1/FPS; 
+const FOV = 90;
+const FOVradians = (FOV/180)*Math.PI;
+
+const pointScalar = 15;
 
 let playerList = [];
 
@@ -110,5 +114,15 @@ document.onkeyup = function(event) {
         queue.push(event.key);
     }
 }
+
+
+
+let p1 = new Vector(0, 0);
+let p2 = new Vector(0, -5);
+let p3 = new Vector(0, -10);
+let p4 = new Vector(0, -15);
+let bez = new CubicBezier(p1, p2, p3, p4, 15);
+
+let bezColl = new BezierCurveCollection(bez);
 
 loop();
