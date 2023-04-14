@@ -13,9 +13,10 @@ function drawScreen() {
 
     // ctx.drawImage(background.image, 0, 0);
 
-    
+    let size = [3,10];
     let roadSegmentList = bezColl.getPointTangents(15);
     let points = [];
+    let edges = [];
 
     for (let i = 0; i < roadSegmentList.length; i++) {
 
@@ -23,38 +24,33 @@ function drawScreen() {
             Math.abs(roadSegmentList[i].point.x - playerList[0].x) < renderDistance &&
             Math.abs(roadSegmentList[i].point.y - playerList[0].y) < renderDistance
             ) {
+            
+            let relativeCenterVector = Vector.subtract(
+                roadSegmentList[i].point,  new Vector(playerList[0].x, playerList[0].y)
+            );
 
-            let vec = Vector.normalize(directionVector);
+            let vec = Vector.normalize(roadSegmentList[i].tangent);
+            relativeCenterVector.rotate2d(player.directionVector.angle);
+            vec.rotate2d(player.directionVector.angle);
+
             let corners = [];
-                let x = centerX;
-                let y = centerY;
+                let x = relativeCenterVector.x;
+                let y = relativeCenterVector.y;
                 x += vec.x*(size[1]/2);
                 y += vec.y*(size[1]/2);
                 vec.rotate2d(Math.PI/2);
                 x += vec.x*(size[0]/2);
                 y += vec.y*(size[0]/2);
-                corners.push([x, y]);
-                for (let i = 0; i < 3; i++) {
-                    vec.rotate2d(Math.PI/2);
-                    x += vec.x*size[!(i % 2)*1];
-                    y += vec.y*size[!(i % 2)*1];
-                    corners.push([x, y]);
-                }
-            drawRelativeVectorRect(
-                playerList[0], 
-                roadSegmentList[i].point, 
-                roadSegmentList[i].tangent, 
-                [roadSegmentWidth*WORLDSCALE, roadSegmentLength*WORLDSCALE], 
-                'gray'
-            );
+                corners.push(new Vector(x, y, -1));
+            for (let i = 0; i < 3; i++) {
+                vec.rotate2d(Math.PI/2);
+                x += vec.x*size[!(i % 2)*1];
+                y += vec.y*size[!(i % 2)*1];
+                corners.push(new Vector(x, y, -1));
+            }
 
-            drawRelativeVectorRect(
-                playerList[0], 
-                roadSegmentList[i].point, 
-                roadSegmentList[i].tangent, 
-                [0.2*WORLDSCALE, 3*WORLDSCALE], 
-                'yellow'
-            );
+            points.append(corners);
+            edges.append([0,1,2,3,0]);
         } 
     }
 
@@ -64,29 +60,31 @@ function drawScreen() {
 
     let screenCoordinates = [];
 
-    for (let i = 0; i < points.length; i++) {
-        let cameraToPointVector = new Vector(
-            points[i].x - cameraPosition.x,
-            points[i].y - cameraPosition.y,
-            points[i].z - cameraPosition.z
-        );
+    for (let j = 0; j < points.length; j++) {
+        for (let i = 0; i < points.length[j]; i++) {
+            let cameraToPointVector = new Vector(
+                points[j][i].x - cameraPosition.x,
+                points[j][i].y - cameraPosition.y,
+                points[j][i].z - cameraPosition.z
+            );
 
-        const zDiff = cameraToPointVector.y;
+            const zDiff = cameraToPointVector.y;
 
-        if (zDiff > cameraDepth) {
-            let screenScale = cameraDepth/zDiff;
-            screenCoordinates.push([
-                points[i].x*screenScale*hei/2, 
-                points[i].z*screenScale*hei/2, 
-                screenScale]);
+            if (zDiff > cameraDepth) {
+                let screenScale = cameraDepth/zDiff;
+                screenCoordinates.push([
+                    GAMEWIDTH/2 + points[j][i].x*screenScale*GAMEHEIGHT/2, 
+                    GAMEHEIGHT/2 + points[j][i].z*screenScale*GAMEHEIGHT/2, 
+                    screenScale]);
+            }
         }
     }
 
     for (let i = 0; i < screenCoordinates.length; i++) {
         ctx.beginPath();
         ctx.arc(
-            wid/2 + screenCoordinates[i][0], 
-            hei/2 + screenCoordinates[i][1],
+            screenCoordinates[i][0], 
+            screenCoordinates[i][1],
             20*screenCoordinates[i][2],
             0, 2*Math.PI
         );
@@ -96,15 +94,17 @@ function drawScreen() {
     ctx.lineWidth = 5;
     for (let i = 0; i < edges.length; i++) {
         ctx.moveTo(
-            wid/2 + screenCoordinates[edges[i][0]][0], 
-            hei/2 + screenCoordinates[edges[i][0]][1]
+            screenCoordinates[edges[i][0]][0], 
+            screenCoordinates[edges[i][0]][1]
         );
-        ctx.lineTo(
-            wid/2 + screenCoordinates[edges[i][1]][0], 
-            hei/2 + screenCoordinates[edges[i][1]][1]
-        ); 
+        for (let j = 1; j < edges[i].length; j++) {
+            ctx.lineTo(
+                screenCoordinates[edges[i][j]][0], 
+                screenCoordinates[edges[i][j]][1]
+            ); 
+        }
+        ctx.stroke();
     }
-    ctx.stroke();
     
 }
 
