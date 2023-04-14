@@ -11,15 +11,37 @@ ctx.imageSmoothingEnabled = false; //turns off antialiasing
 
 let ctxMap = canvasMap.getContext("2d");
 
-const WIDTH = ctx.canvas.width;
-const HEIGHT = ctx.canvas.height;
-
 const WORLDSCALE = 5; //scales up from meters to pixels, lower number, more zoomed out
 const FPS = 60;
 const HZ = 1/FPS; 
 const FOV = 90;
 const FOVradians = (FOV/180)*Math.PI;
 
+const WIDTH = ctxMap.canvas.width;
+const HEIGHT = ctxMap.canvas.height;
+
+const GAMEHEIGHT = ctx.canvas.height = 450;
+const GAMEWIDTH = ctx.canvas.width = 800;
+
+    let aspectRatio = GAMEWIDTH/GAMEHEIGHT;
+    let cameraPosition = {
+        x: 0,
+        y: -5,
+        z: 0
+    };
+    const cameraDepth = Math.abs(cameraPosition.y);
+    const screenWidth = 
+        Math.tan(FOVradians/2)*
+        cameraDepth
+    ;
+    const screenHeight = 
+        screenWidth/aspectRatio
+    ;
+
+
+let renderDistance = 250; //100 meters
+let roadSegmentLength = 15; //everything is given in meters
+let roadSegmentWidth = 8;
 
 let playerList = [
     new Player(0, 0, "ongelsk")
@@ -37,7 +59,6 @@ for (let i = 0; i < playerList.length; i++) {
 }
 
 document.onkeydown = function(event) {
-    // console.log(event.key);
     keyPresses[event.key] = true;
 }
 
