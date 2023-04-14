@@ -1,22 +1,5 @@
 'use strict';
 
-function loop() {
-    if (gameState == "startScreen") {
-        startScreen();
-    }
-    else if (gameState == "menu") {
-        menu();
-    }
-    else if (gameState == "game") {
-        game();
-    }
-    else {
-        console.log("game state error");
-    }
-
-    window.requestAnimationFrame(loop);
-}
-
 function drawScreen() {
     //draws the main screen
     let background = {
@@ -78,7 +61,7 @@ function drawMiniMap() {
     let plantsArr = bezColl.getPlants();
     for (let i = 0; i < plantsArr.length; i++) {
         let plant = plantsArr[i];
-        drawRelativeCircle(playerList[0], plant.position, plant.size, plant.color);
+        // drawRelativeCircle(playerList[0], plant.position, plant.size, plant.color);
     }
 
     let stoneCenterPos = new Vector(WIDTH/(2*WORLDSCALE) - 10, HEIGHT/(2*WORLDSCALE) - 20);
@@ -271,6 +254,8 @@ function game() {
     for (let i = 0; i < playerList.length; i++) {
         playerList[i].update();
     }
+
+    bezColl.updatePassed(new Vector(playerList[0].x, playerList[0].y));
 
     drawScreen();
     drawMiniMap();

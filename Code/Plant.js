@@ -93,16 +93,16 @@ class Plant {
     }
 }
 
-const canvas = document.getElementById('canvas');
-let ctx = canvas.getContext('2d');
-const WIDTH = canvas.width;
-const HEIGHT = canvas.height;
+// const canvas = document.getElementById('canvas');
+// let ctx = canvas.getContext('2d');
+// const WIDTH = canvas.width;
+// const HEIGHT = canvas.height;
 
-let P = new Plant   ({
-                        "X": "F-[[X]+X]+F[+FX]-X",
-                        "F": "FF"
-                    },
-                    25);
+// let P = new Plant   ({
+//                         "X": "F-[[X]+X]+F[+FX]-X",
+//                         "F": "FF"
+//                     },
+//                     25);
 
-let txt = (P.cycleMultiple("X", 6));
-P.drawBranchStack(txt, new Vector(WIDTH/4, HEIGHT/2), new Vector(3, 0));
+// let txt = (P.cycleMultiple("X", 6));
+// P.drawBranchStack(txt, new Vector(WIDTH/4, HEIGHT/2), new Vector(3, 0));

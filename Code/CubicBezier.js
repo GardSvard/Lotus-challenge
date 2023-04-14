@@ -135,7 +135,11 @@ class CubicBezier {
             let direction = randomFloat/Math.abs(randomFloat);
             normal.scale(((randomFloat*20*direction)+15)*direction);
             let plantPost =Vector.add(P, normal);
-            let newPlant = new Plant(plantPost);
+            let newPlant = new Plant({
+                                        "X": "F-[[X]+X]+F[+FX]-X",
+                                        "F": "FF"
+                                    },
+                                    25);
             plantsArr.push(newPlant);
         }
         return(plantsArr);
