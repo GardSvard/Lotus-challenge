@@ -1,14 +1,111 @@
 'use strict';
 
+
 function drawScreen() {
+
+    ctx.clearRect(0,0,GAMEWIDTH,GAMEHEIGHT);
+
     //draws the main screen
-    let background = {
-        image : new Image()
+    // let background = {
+    //     image : new Image()
+    // }
+    // background.image.src = "./spriteSheets/backgroundDay.png";
+
+    // ctx.drawImage(background.image, 0, 0);
+
+    
+    let roadSegmentList = bezColl.getPointTangents(15);
+    let points = [];
+
+    for (let i = 0; i < roadSegmentList.length; i++) {
+
+        if (
+            Math.abs(roadSegmentList[i].point.x - playerList[0].x) < renderDistance &&
+            Math.abs(roadSegmentList[i].point.y - playerList[0].y) < renderDistance
+            ) {
+
+            let vec = Vector.normalize(directionVector);
+            let corners = [];
+                let x = centerX;
+                let y = centerY;
+                x += vec.x*(size[1]/2);
+                y += vec.y*(size[1]/2);
+                vec.rotate2d(Math.PI/2);
+                x += vec.x*(size[0]/2);
+                y += vec.y*(size[0]/2);
+                corners.push([x, y]);
+                for (let i = 0; i < 3; i++) {
+                    vec.rotate2d(Math.PI/2);
+                    x += vec.x*size[!(i % 2)*1];
+                    y += vec.y*size[!(i % 2)*1];
+                    corners.push([x, y]);
+                }
+            drawRelativeVectorRect(
+                playerList[0], 
+                roadSegmentList[i].point, 
+                roadSegmentList[i].tangent, 
+                [roadSegmentWidth*WORLDSCALE, roadSegmentLength*WORLDSCALE], 
+                'gray'
+            );
+
+            drawRelativeVectorRect(
+                playerList[0], 
+                roadSegmentList[i].point, 
+                roadSegmentList[i].tangent, 
+                [0.2*WORLDSCALE, 3*WORLDSCALE], 
+                'yellow'
+            );
+        } 
     }
-    background.image.src = "./spriteSheets/backgroundDay.png";
 
-    ctx.drawImage(background.image, 0, 0);
 
+    ctx.fillStyle = 'green';
+    ctx.fillRect(0, GAMEHEIGHT/2, GAMEWIDTH, GAMEHEIGHT/2);
+
+    let screenCoordinates = [];
+
+    for (let i = 0; i < points.length; i++) {
+        let cameraToPointVector = new Vector(
+            points[i].x - cameraPosition.x,
+            points[i].y - cameraPosition.y,
+            points[i].z - cameraPosition.z
+        );
+
+        const zDiff = cameraToPointVector.y;
+
+        if (zDiff > cameraDepth) {
+            let screenScale = cameraDepth/zDiff;
+            screenCoordinates.push([
+                points[i].x*screenScale*hei/2, 
+                points[i].z*screenScale*hei/2, 
+                screenScale]);
+        }
+    }
+
+    for (let i = 0; i < screenCoordinates.length; i++) {
+        ctx.beginPath();
+        ctx.arc(
+            wid/2 + screenCoordinates[i][0], 
+            hei/2 + screenCoordinates[i][1],
+            20*screenCoordinates[i][2],
+            0, 2*Math.PI
+        );
+        ctx.fill();        
+    }
+
+    ctx.lineWidth = 5;
+    for (let i = 0; i < edges.length; i++) {
+        ctx.moveTo(
+            wid/2 + screenCoordinates[edges[i][0]][0], 
+            hei/2 + screenCoordinates[edges[i][0]][1]
+        );
+        ctx.lineTo(
+            wid/2 + screenCoordinates[edges[i][1]][0], 
+            hei/2 + screenCoordinates[edges[i][1]][1]
+        ); 
+    }
+    ctx.stroke();
+    
 }
 
 function drawMiniMap() {
@@ -29,9 +126,6 @@ function drawMiniMap() {
     //     }
     // ]
 
-    let renderDistance = 250; //100 meters
-    let roadSegmentLength = 15; //everything is given in meters
-    let roadSegmentWidth = 8;
 
     for (let i = 0; i < roadSegmentList.length; i++) {
 

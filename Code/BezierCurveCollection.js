@@ -99,7 +99,6 @@ class BezierCurveCollection {
 
     updatePassed(position) {
         let currentBez = this.cubicBezList[this.cubicBezList.length-1-this.renderDist];
-        console.log(currentBez.hasPassed(position), this.passedCurrent);
         if (currentBez.hasPassed(position) != this.passedCurrent) {
             console.log("tetss");
             this.nextSection();

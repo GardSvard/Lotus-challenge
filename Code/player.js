@@ -2,7 +2,7 @@
 
 class Player extends Car {
     constructor(x, y,
-            spriteSheet, size = 5,
+            spriteSheet, size = 1,
             speed = 0, directionVector = new Vector(0, -30),
             accelerationTop = 5, accelerationTop2 = accelerationTop ** 2,
             drawTopDown = false) {
@@ -48,7 +48,6 @@ class Player extends Car {
                 keyPresses[this.controlDict.turnRight] - 
                 keyPresses[this.controlDict.turnLeft]
             )*Math.PI/100;
-            // console.log(keyPresses[this.controlDict.turnLeft])
             this.directionVector.rotate2d(turn);
         }
 
@@ -56,7 +55,7 @@ class Player extends Car {
             keyPresses[this.controlDict.goForwards] 
         )*this.acceleration(this.speed);
         
-        this.speed += acc;
+        this.speed += acc - this.grassDeceleration()*HZ;
 
         if (keyPresses[this.controlDict.goBackwards]) {
             this.speed -= this.deceleration();
@@ -84,5 +83,42 @@ class Player extends Car {
         if (this.speed - this.brakeForce*HZ < 0) {
             return this.speed;
         } else {return this.brakeForce*HZ;}
+    }
+
+    grassDeceleration() {
+        let dist = bezColl.approxDistToCurrent(
+            new Vector(this.x, this.y), 10
+        );
+        if (dist > roadSegmentWidth/2) {
+            console.log('negative speed' + this.speed);
+            return this.speed/2;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    collisionCheck() {
+        objectList = [
+            {
+                x : -10,
+                y : -20,
+                size : 3
+            }
+        ];
+
+
+        for (let i = 0; i < objectList.length; i++) {
+            let diffVector = new Vector(
+                objectList[i].x - this.x,
+                objectList[i].y - this.y
+            );
+
+            if (diffVector.length < this.size + objectList[i].size) {
+                this.impulseVector = Vector.scale(-this.speed, 
+                    Vector.normalize(diffVector)
+                );
+            }
+        }
     }
 }
