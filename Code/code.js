@@ -1,12 +1,9 @@
-'use strict';
+"use strict";
 
-let canvasGfx = document.getElementById("canvasGfx");
-let canvasMap = document.getElementById("canvasMap");
-let preOutput = document.getElementById("preOutput");
-let buttonRun = document.getElementById("buttonRun");
-let buttonReset = document.getElementById("buttonReset");
+//init variables
 
-let ctx = canvasGfx.getContext("2d");
+const canvasGFX = document.getElementById("canvasGFX");
+const ctx = canvasGFX.getContext("2d");
 ctx.imageSmoothingEnabled = false; //turns off antialiasing
 
 let ctxMap = canvasMap.getContext("2d");
@@ -42,67 +39,107 @@ const GAMEWIDTH = ctx.canvas.width = 800;
 let renderDistance = 250; //100 meters
 let roadSegmentLength = 15; //everything is given in meters
 let roadSegmentWidth = 8;
+const pointScalar = 15;
 
-let playerList = [
-    new Player(0, 0, "ongelsk")
+let playerList = [];
+
+let gameState = "startScreen";
+let currentOption = 0;
+
+let keyPresses = {};
+
+let queue =  [];
+
+let maps = [
+    "plains",
+    "fog",
+    "city"
 ];
 
-let keyPresses = {
-    'Escape' : false
+let cars = [
+    "car1",
+    "car2",
+    "car3",
+];
+
+let menuControls = {
+    up: "w",
+    down: "s",
+    left: "a",
+    right: "d",
+    select: "Enter",
+    back: "Escape"
 };
 
-for (let i = 0; i < playerList.length; i++) {
-    keyPresses[playerList[i].controlDict.turnLeft] = false;
-    keyPresses[playerList[i].controlDict.turnRight] = false;
-    keyPresses[playerList[i].controlDict.goForwards] = false;
-    keyPresses[playerList[i].controlDict.goBackwards] = false;
+let gameControls  = {
+    pause: "Escape",
+    p1Accelerate: "w",
+    p1Decelerate: "s",
+    p1Left: "a",
+    p1Right: "d",
+    p1Shift: "Shift",
+    p2Accelerate: "ArrowUp",
+    p2Decelerate: "ArrowDown",
+    p2Left: "ArrowLeft",
+    p2Right: "ArrowRight",
+    p2Shift: "."
 }
 
+let startScreenOptions = [
+    "play",
+    "settings",
+    "credits"
+];
+
+let playOptions = [
+    "start",
+    ["map", maps[0]],
+    ["playerCount", 1],
+    ["player1Car", "car1"],
+    ["player2Car", "car1"],
+];
+
+let settingsOptions = [
+    ["masterVolume", 50],
+    ["musicVolume", 100],
+    ["fXVolume", 100],
+    // ["player1Accelerate", "w"],
+    // ["player1Decelerate", "s"],
+    // ["player1Left", "a"],
+    // ["player1Right", "d"],
+    // ["player1Shift", "Shift"],
+    // ["player2Accelerate", "ArrowUp"],
+    // ["player2Decelerate", "ArrowDown"],
+    // ["player2Left", "ArrowLeft"],
+    // ["player2Right", "ArrowRight"],
+    // ["player2Shift", " "]
+];
+
+let creditsValues = [
+    ["dev1", "gard"],
+    ["dev2", "liam"],
+    ["dev3", "oscar"]
+];
+
+gameStateChange("startScreen");
+
 document.onkeydown = function(event) {
-    keyPresses[event.key] = true;
+    if (gameState == "game") {
+        keyPresses[event.key] = true;
+    }
 }
 
 document.onkeyup = function(event) {
-    keyPresses[event.key] = false;
-}
-
-function update() {
-    for (let i = 0; i < playerList.length; i++) {
-        playerList[i].update();
+    if (gameState == "game") {
+        keyPresses[event.key] = false;
     }
-    bezColl.updatePassed(new Vector(playerList[0].x, playerList[0].y));
-
-    drawScreen();
-    drawMiniMap();
-}
-
-function loop() {
-    if (buttonPressed == true) { //pause under the game window
-        update();
-    }
-
-    window.requestAnimationFrame(loop);
-}
-
-buttonRun.onclick = function () {
-    if (buttonPressed == false) {
-        buttonPressed = true;
-        buttonRun.innerHTML = "Stop";
-        if (started == false) {
-            started = true;
-            window.requestAnimationFrame(loop);
-        }
-    } else {
-        buttonPressed = false;
-        buttonRun.innerHTML = "Start";
+    else {
+        queue.push(event.key);
+        queue.push(event.key);
     }
 }
 
-buttonReset.onclick = function() {reset();}
 
-let started = false;
-let buttonPressed = false;
-// reset();
 
 let p1 = new Vector(0, 0);
 let p2 = new Vector(0, -5);
@@ -111,3 +148,5 @@ let p4 = new Vector(0, -15);
 let bez = new CubicBezier(p1, p2, p3, p4, 15);
 
 let bezColl = new BezierCurveCollection(bez);
+
+loop();

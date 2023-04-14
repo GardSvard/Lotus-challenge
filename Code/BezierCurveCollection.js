@@ -8,16 +8,14 @@ class BezierCurveCollection {
     renderDist;
     maxTheta;
     passedCurrent;
-    pointScalar;
 
     constructor(curve1) {
         this.cubicBezList = [curve1];
         this.currentLastIndex = 0;
-        this.renderDist = 2;
+        this.renderDist = 3;
         this.maxTheta = 1.5;
         this.passedCurrent = curve1.hasPassed(new Vector(0, 0));
         this.scale=curve1.scale;
-        this.pointScalar = 15;
         for (let i=0; i<this.renderDist; i++) {
             this.nextSection();
         }
@@ -84,7 +82,7 @@ class BezierCurveCollection {
             for (let m = 0; m<sampleSize; m++) {
                 let t = m/sampleSize;
                 let P = bez.getPoint(t);
-                P.scale(this.pointScalar); //scales up the points for smoother and bigger road
+                P.scale(pointScalar); //scales up the points for smoother and bigger road
                 let tangent = bez.getTangent(t, draw);
                 let tangentObject = {
                     point: P, 
@@ -97,10 +95,19 @@ class BezierCurveCollection {
         return(tangentsObjList);
     }
 
+    getPlants() {
+        let plantsArr = [];
+        for (let x = 0; x < this.renderDist; x++) {
+            let i = x+(this.cubicBezList.length-1-(this.renderDist));
+            let bez = this.cubicBezList[i];
+            plantsArr.push(...bez.plants);
+        }
+        return(plantsArr);
+    }
+
     updatePassed(position) {
         let currentBez = this.cubicBezList[this.cubicBezList.length-1-this.renderDist];
         if (currentBez.hasPassed(position) != this.passedCurrent) {
-            console.log("tetss");
             this.nextSection();
             this.passedCurrent = this.cubicBezList[this.cubicBezList.length-this.renderDist].hasPassed(position);
         }

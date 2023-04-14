@@ -14,6 +14,7 @@ class CubicBezier {
         this.C = C;
         this.D = D;
         this.scale = scale;
+        this.plants = this.createPlants();
     }
 
     getPoint(t, draw = false) {
@@ -96,25 +97,54 @@ class CubicBezier {
     }
 
     hasPassed(position, draw=false) {
+        let margin = 5;
         let passed = false;
         let normal = Vector.rotate2d(this.getTangent(1), Math.PI/2);
-        let point = Vector.scale(WORLDSCALE*2.75, this.getPoint(1));
+        let point = Vector.scale(pointScalar, this.getPoint(1));
+        // console.log(position.y);
+        // console.log(point.y);
         if (normal.x != 0) {
             let a = normal.y/normal.x;
             let b = point.y-point.x*a;
             if (position.y > (position.x * a) + b) {
-                passed = true;
+                if ((point.x-position.x)*(point.x-position.x)+(point.y-position.y)*(point.y-position.y) <= margin*margin) {
+                    passed = true;
+                }
             }
         }  else {
             if (position.y > (point.y)) {
-                passed = true;
+                if ((point.x-position.x)*(point.x-position.x)+(point.y-position.y)*(point.y-position.y) <= margin*margin) {
+                    passed = true;
+                }
             }
         }
-
         
 
         return(passed);
     }
+
+    createPlants() {
+        let plantsArr = [];
+        let plantsN = 10
+        for (let m = 0; m<plantsN; m++) {
+            let t = m/plantsN;
+            let P = Vector.scale(pointScalar, this.getPoint(t));
+            let normal = Vector.rotate2d(this.getTangent(t), Math.PI/2);
+            normal.normalize();
+            let randomFloat = Math.random()*2-1;
+            let direction = randomFloat/Math.abs(randomFloat);
+            normal.scale(((randomFloat*20*direction)+15)*direction);
+            let plantPost =Vector.add(P, normal);
+            let newPlant = new Plant({
+                                        "X": "F-[[X]+X]+F[+FX]-X",
+                                        "F": "FF"
+                                    },
+                                    25);
+            plantsArr.push(newPlant);
+        }
+        return(plantsArr);
+    }
+
 }
 
 
