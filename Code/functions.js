@@ -30,8 +30,8 @@ function drawScreen() {
             );
 
             let vec = Vector.normalize(roadSegmentList[i].tangent);
-            relativeCenterVector.rotate2d(player.directionVector.angle);
-            vec.rotate2d(player.directionVector.angle);
+            relativeCenterVector.rotate2d(playerList[0].directionVector.angle);
+            vec.rotate2d(playerList[0].directionVector.angle);
 
             let corners = [];
                 let x = relativeCenterVector.x;
@@ -49,8 +49,8 @@ function drawScreen() {
                 corners.push(new Vector(x, y, -1));
             }
 
-            points.append(corners);
-            edges.append([0,1,2,3,0]);
+            points.push(corners);
+            edges.push([0,1,2,3,0]);
         } 
     }
 
@@ -61,7 +61,7 @@ function drawScreen() {
     let screenCoordinates = [];
 
     for (let j = 0; j < points.length; j++) {
-        for (let i = 0; i < points.length[j]; i++) {
+        for (let i = 0; i < points[j].length; i++) {
             let cameraToPointVector = new Vector(
                 points[j][i].x - cameraPosition.x,
                 points[j][i].y - cameraPosition.y,
@@ -69,7 +69,7 @@ function drawScreen() {
             );
 
             const zDiff = cameraToPointVector.y;
-
+            
             if (zDiff > cameraDepth) {
                 let screenScale = cameraDepth/zDiff;
                 screenCoordinates.push([
@@ -110,8 +110,8 @@ function drawScreen() {
 
 function drawMiniMap() {
     //draws the minimap
-    ctx.fillStyle = "green";
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctxMap.fillStyle = "green";
+    ctxMap.fillRect(0, 0, WIDTH, HEIGHT);
     
     let roadSegmentList = bezColl.getPointTangents(15);
 
@@ -188,14 +188,14 @@ function drawRelativeCircle(player, centerVector, size, color) {
     );
     diffVector.rotate2d(player.directionVector.angle);
 
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(
+    ctxMap.fillStyle = color;
+    ctxMap.beginPath();
+    ctxMap.arc(
         WIDTH/2 - diffVector.x*WORLDSCALE, 
         HEIGHT/2 - diffVector.y*WORLDSCALE,
         size*WORLDSCALE, 0, 2*Math.PI
     );
-    ctx.fill();
+    ctxMap.fill();
 }
 
 function drawVectorRect(centerX, centerY, directionVector, size, color) {
@@ -221,14 +221,14 @@ function drawVectorRect(centerX, centerY, directionVector, size, color) {
                corners.push([x, y]);
            }
 
-       ctx.fillStyle = color;
-       ctx.beginPath();
-       ctx.moveTo(corners[3][0], corners[3][1]);
+       ctxMap.fillStyle = color;
+       ctxMap.beginPath();
+       ctxMap.moveTo(corners[3][0], corners[3][1]);
        for (let i = 0; i < corners.length; i++) {
-           ctx.lineTo(corners[i][0], corners[i][1]);
+           ctxMap.lineTo(corners[i][0], corners[i][1]);
        }
-       ctx.closePath();
-       ctx.fill();
+       ctxMap.closePath();
+       ctxMap.fill();
 }
 
 function loop() {
