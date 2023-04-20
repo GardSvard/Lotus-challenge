@@ -6,4 +6,6 @@ class Obstacle extends Object {
 
         this.jumpable = jumpable;
     }
+
+    
 }

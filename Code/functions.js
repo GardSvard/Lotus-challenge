@@ -1,20 +1,129 @@
 'use strict';
 
+
 function drawScreen() {
+
+    ctx.clearRect(0,0,GAMEWIDTH,GAMEHEIGHT);
+
     //draws the main screen
-    let background = {
-        image : new Image()
+    // let background = {
+    //     image : new Image()
+    // }
+    // background.image.src = "./spriteSheets/backgroundDay.png";
+
+    // ctx.drawImage(background.image, 0, 0);
+
+    let size = [3,15];
+    let roadSegmentList = bezColl.getPointTangents(15);
+    let points = [];
+    let edges = [];
+
+    for (let i = 0; i < roadSegmentList.length; i++) {
+
+        if (
+            Math.abs(roadSegmentList[i].point.x - playerList[0].x) < renderDistance &&
+            Math.abs(roadSegmentList[i].point.y - playerList[0].y) < renderDistance
+            ) {
+            
+            let relativeCenterVector = Vector.subtract(
+                roadSegmentList[i].point,  new Vector(playerList[0].x, playerList[0].y)
+            );
+
+            let vec = Vector.normalize(roadSegmentList[i].tangent);
+            relativeCenterVector.rotate2d(playerList[0].directionVector.angle);
+            vec.rotate2d(playerList[0].directionVector.angle);
+
+            let corners = [];
+                let x = relativeCenterVector.x;
+                let y = relativeCenterVector.y;
+                x += vec.x*(size[1]/2);
+                y += vec.y*(size[1]/2);
+                vec.rotate2d(Math.PI/2);
+                x += vec.x*(size[0]/2);
+                y += vec.y*(size[0]/2);
+                corners.push(new Vector(x, y, -2));
+            for (let i = 0; i < 3; i++) {
+                vec.rotate2d(Math.PI/2);
+                x += vec.x*size[!(i % 2)*1];
+                y += vec.y*size[!(i % 2)*1];
+                corners.push(new Vector(x, y, -2));
+            }
+
+            points.push(corners);
+            edges.push([0,1,2,3,0]);
+        } 
     }
-    background.image.src = "./spriteSheets/backgroundDay.png";
 
-    ctx.drawImage(background.image, 0, 0);
 
+    ctx.fillStyle = 'green';
+    ctx.fillRect(0, GAMEHEIGHT/2, GAMEWIDTH, GAMEHEIGHT/2);
+
+    let screenCoordinates = [];
+
+    for (let j = 0; j < points.length; j++) {
+        for (let i = 0; i < points[j].length; i++) {
+            let cameraToPointVector = new Vector(
+                points[j][i].x - cameraPosition.x,
+                points[j][i].y - cameraPosition.y,
+                points[j][i].z - cameraPosition.z
+            );
+
+            const zDiff = cameraToPointVector.y;
+            
+            // if (zDiff > cameraDepth) {
+                let screenScale = cameraDepth/zDiff;
+                screenCoordinates.push([
+                    GAMEWIDTH - GAMEWIDTH*(1 + points[j][i].x*screenScale)/2, 
+                    GAMEHEIGHT - GAMEHEIGHT/2 - points[j][i].z*screenScale*GAMEHEIGHT/2, 
+                    screenScale]);
+            // }
+        }
+    }
+
+    // console.log(screenCoordinates);
+    ctx.fillStyle = 'grey';
+
+    ctx.lineWidth = 3;
+    for (let i = 0; i < edges.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(
+            screenCoordinates[4*i + edges[i][0]][0], 
+            screenCoordinates[4*i + edges[i][0]][1]
+        );
+        for (let j = 1; j < edges[i].length; j++) {
+            if (screenCoordinates[4*i + edges[i][j]][1] > GAMEHEIGHT/2) {
+                ctx.lineTo(
+                    screenCoordinates[4*i + edges[i][j]][0], 
+                    screenCoordinates[4*i + edges[i][j]][1]
+                ); 
+            }
+        }
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+        
+    }
+
+    // ctx.fillStyle = 'black';
+    // for (let i = 0; i < screenCoordinates.length; i++) {
+    //     if (screenCoordinates[i][2] > 0) {
+    //         ctx.beginPath();
+    //         ctx.arc(
+    //             screenCoordinates[i][0], 
+    //             screenCoordinates[i][1],
+    //             40*screenCoordinates[i][2],
+    //             0, 2*Math.PI
+    //         );
+    //         ctx.fill();
+    //     }
+    // }
+    
 }
 
 function drawMiniMap() {
     //draws the minimap
-    ctx.fillStyle = "green";
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctxMap.fillStyle = "green";
+    ctxMap.fillRect(0, 0, WIDTH, HEIGHT);
     
     let roadSegmentList = bezColl.getPointTangents(15);
 
@@ -29,9 +138,6 @@ function drawMiniMap() {
     //     }
     // ]
 
-    let renderDistance = 250; //100 meters
-    let roadSegmentLength = 15; //everything is given in meters
-    let roadSegmentWidth = 8;
 
     for (let i = 0; i < roadSegmentList.length; i++) {
 
@@ -94,14 +200,14 @@ function drawRelativeCircle(player, centerVector, size, color) {
     );
     diffVector.rotate2d(player.directionVector.angle);
 
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(
+    ctxMap.fillStyle = color;
+    ctxMap.beginPath();
+    ctxMap.arc(
         WIDTH/2 - diffVector.x*WORLDSCALE, 
         HEIGHT/2 - diffVector.y*WORLDSCALE,
         size*WORLDSCALE, 0, 2*Math.PI
     );
-    ctx.fill();
+    ctxMap.fill();
 }
 
 function drawVectorRect(centerX, centerY, directionVector, size, color) {
@@ -127,14 +233,14 @@ function drawVectorRect(centerX, centerY, directionVector, size, color) {
                corners.push([x, y]);
            }
 
-       ctx.fillStyle = color;
-       ctx.beginPath();
-       ctx.moveTo(corners[3][0], corners[3][1]);
+       ctxMap.fillStyle = color;
+       ctxMap.beginPath();
+       ctxMap.moveTo(corners[3][0], corners[3][1]);
        for (let i = 0; i < corners.length; i++) {
-           ctx.lineTo(corners[i][0], corners[i][1]);
+           ctxMap.lineTo(corners[i][0], corners[i][1]);
        }
-       ctx.closePath();
-       ctx.fill();
+       ctxMap.closePath();
+       ctxMap.fill();
 }
 
 function loop() {
@@ -327,7 +433,7 @@ function gameStateChange(state) {
         keyPresses[gameControls.p2Right] = false;
         keyPresses[gameControls.p2Shift] = false;
         playerList = [
-            new Player(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE), "ongelsk")
+            new Player(0, 0, "ongelsk")
         ];
     }
     else {

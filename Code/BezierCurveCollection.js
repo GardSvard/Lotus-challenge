@@ -8,12 +8,14 @@ class BezierCurveCollection {
     renderDist;
     maxTheta;
     passedCurrent;
+    score;
 
     constructor(curve1) {
         this.cubicBezList = [curve1];
         this.currentLastIndex = 0;
         this.renderDist = 3;
         this.maxTheta = 1.5;
+        this.score = 0;
         this.passedCurrent = curve1.hasPassed(new Vector(0, 0));
         this.scale=curve1.scale;
         for (let i=0; i<this.renderDist; i++) {
@@ -59,6 +61,7 @@ class BezierCurveCollection {
         if (draw) {
             this.renderCurrent();
         }
+        this.score += 1;
     }
 
     approxDistToCurrent(P, sampleSize=5) {
@@ -106,7 +109,7 @@ class BezierCurveCollection {
     }
 
     updatePassed(position) {
-        let currentBez = this.cubicBezList[this.cubicBezList.length-this.renderDist];
+        let currentBez = this.cubicBezList[this.cubicBezList.length-1-this.renderDist];
         if (currentBez.hasPassed(position) != this.passedCurrent) {
             this.nextSection();
             this.passedCurrent = this.cubicBezList[this.cubicBezList.length-this.renderDist].hasPassed(position);

@@ -91,8 +91,10 @@ class CubicBezier {
         for (let i = 1; i <= sampleSize; i++) {
             let t = i/sampleSize;
             let dist =  Vector.subtract(this.getPoint(t), P).length;
+            // console.log(this.getPoint(t));
             minDist = Math.min(minDist, dist);
         }
+        // console.log(minDist)
         return(minDist);
     }
 
