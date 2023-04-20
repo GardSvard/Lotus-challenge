@@ -141,35 +141,33 @@ function loop() {
     
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-    if (gameState == "startScreen") {
-        startScreen();
+    if (gameState == "Menu") {
+        menu();
     }
-    else if (gameState == "play") {
+    else if (gameState == "Play") {
         play();
     }
-    else if (gameState == "settings") {
+    else if (gameState == "Settings") {
         settings();
     }
-    else if (gameState == "credits") {
+    else if (gameState == "Credits") {
         credits();
     }
-    else if (gameState == "game") {
+    else if (gameState == "Game") {
         game();
     }
     else {
         console.log("game state error");
     }
 
-    //console.log(keyPresses);
-
     window.requestAnimationFrame(loop);
 }
 
-function startScreen() {
+function menu() {
     scrollQueue();
 
     if (keyPresses[menuControls.select]) {
-        gameStateChange(startScreenOptions[currentOption]);
+        gameStateChange(menuOptions[currentOption]);
     }
 
     currentOption += keyPresses[menuControls.down] - keyPresses[menuControls.up];
@@ -177,11 +175,11 @@ function startScreen() {
     if (currentOption < 0) {
         currentOption = 0;
     }
-    if (currentOption > startScreenOptions.length - 1) {
-        currentOption = startScreenOptions.length - 1;
+    if (currentOption > menuOptions.length - 1) {
+        currentOption = menuOptions.length - 1;
     }
 
-    drawOptions(startScreenOptions);
+    drawOptions(menuOptions);
 
 }
 
@@ -189,18 +187,18 @@ function play() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("startScreen");
+        gameStateChange("Menu");
     }
-    if (keyPresses[menuControls.select] && playOptions[currentOption] == "start") {
-        gameStateChange("game");
+    if (keyPresses[menuControls.select] && playOptions[currentOption] == "Start") {
+        gameStateChange("Game");
     }
-    if (playOptions[currentOption][0] == "map") {
+    if (playOptions[currentOption][0] == "Map") {
         playOptions[currentOption][1] = listScroll(playOptions[currentOption][1], maps);
     }
-    if (playOptions[currentOption][0] == "playerCount") {
+    if (playOptions[currentOption][0] == "Player Count") {
         playOptions[currentOption][1] = slider(playOptions[currentOption][1], 1, 2);
     }
-    if (playOptions[currentOption][0] == "player1Car" || playOptions[currentOption][0] == "player2Car") {
+    if (playOptions[currentOption][0] == "Player 1 Car" || playOptions[currentOption][0] == "Player 2 Car") {
         playOptions[currentOption][1] = listScroll(playOptions[currentOption][1], cars);
     }
 
@@ -221,9 +219,9 @@ function settings() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("startScreen");
+        gameStateChange("Menu");
     }
-    if (settingsOptions[currentOption][0] == "masterVolume" || settingsOptions[currentOption][0] == "musicVolume" || settingsOptions[currentOption][0] == "fXVolume") {
+    if (settingsOptions[currentOption][0] == "Master Volume" || settingsOptions[currentOption][0] == "Music Volume" || settingsOptions[currentOption][0] == "FX Volume") {
         settingsOptions[currentOption][1] = slider(settingsOptions[currentOption][1], 0, 100);
     }
 
@@ -245,9 +243,19 @@ function credits() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("startScreen");
+        gameStateChange("Menu");
     }
-    console.log("credits!!!");
+
+    currentOption += keyPresses[menuControls.down] - keyPresses[menuControls.up];
+
+    if (currentOption < 0) {
+        currentOption = 0;
+    }
+    if (currentOption > settingsOptions.length - 1) {
+        currentOption = settingsOptions.length - 1;
+    }
+
+    drawOptions(creditsOptions);
 }
 
 function game() {
@@ -264,8 +272,8 @@ function game() {
 function gameStateChange(state) {
     queue = [];
     keyPresses = {};
-    if (state == "startScreen") {
-        gameState = "startScreen";
+    if (state == "Menu") {
+        gameState = "Menu";
         keyPresses[menuControls.up] = false;
         keyPresses[menuControls.down] = false;
         keyPresses[menuControls.left] = false;
@@ -274,8 +282,8 @@ function gameStateChange(state) {
         keyPresses[menuControls.back] = false;
         currentOption = 0;
     }
-    else if (state == "play") {
-        gameState = "play";
+    else if (state == "Play") {
+        gameState = "Play";
         keyPresses[menuControls.up] = false;
         keyPresses[menuControls.down] = false;
         keyPresses[menuControls.left] = false;
@@ -284,8 +292,8 @@ function gameStateChange(state) {
         keyPresses[menuControls.back] = false;
         currentOption = 0;
     }
-    else if (state == "settings") {
-        gameState = "settings";
+    else if (state == "Settings") {
+        gameState = "Settings";
         keyPresses[menuControls.up] = false;
         keyPresses[menuControls.down] = false;
         keyPresses[menuControls.left] = false;
@@ -294,13 +302,19 @@ function gameStateChange(state) {
         keyPresses[menuControls.back] = false;
         currentOption = 0;
     }
-    else if (state == "credits") {
-        gameState = "credits";
+    else if (state == "Credits") {
+        gameState = "Credits";
+        keyPresses[menuControls.up] = false;
+        keyPresses[menuControls.down] = false;
+        keyPresses[menuControls.left] = false;
+        keyPresses[menuControls.right] = false;
+        keyPresses[menuControls.select] = false;
         keyPresses[menuControls.back] = false;
+        currentOption = 0;
     }
     
-    else if (state == "game") {
-        gameState = "game";
+    else if (state == "Game") {
+        gameState = "Game";
         keyPresses[gameControls.pause] = false;
         keyPresses[gameControls.p1Accelerate] = false;
         keyPresses[gameControls.p1Decelerate] = false;
@@ -319,8 +333,8 @@ function gameStateChange(state) {
     else {
         console.log("gameStateChange error");
     }
-    console.log(gameState);
-    console.log(keyPresses);
+    // console.log(gameState);
+    // console.log(keyPresses);
 }
 
 
@@ -361,15 +375,39 @@ function scrollQueue() {
 }
 
 function drawOptions(options) {
-    ctx.font = "30px Monocraft";
-    ctx.fillText(options[currentOption], 50, HEIGHT / 2);
 
-    for (let i = 1; i < 5; i++) {
+    ctx.strokeRect(40, HEIGHT / 2 - 35, 350, 45);
+    ctx.font = "70px Monocraft";
+
+    ctx.fillText(gameState, 50, 300)
+
+    ctx.font = "30px Monocraft"
+
+    if (options[currentOption].length != 2) {
+        ctx.fillText(options[currentOption], 50, HEIGHT / 2);
+    }
+    else {
+        ctx.fillText(options[currentOption][0], 50, HEIGHT / 2);
+        ctx.fillText(options[currentOption][1], 400, HEIGHT / 2);
+    }
+    for (let i = 1; i < 10; i++) {
         if (options[currentOption + i]) {
-            ctx.fillText(options[currentOption + i], 50, (HEIGHT / 2) + 40 * i);
+            if (options[currentOption + i].length != 2) {
+                ctx.fillText(options[currentOption + i], 50, (HEIGHT / 2) + 40 * i);
+            }
+            else {
+                ctx.fillText(options[currentOption + i][0], 50, (HEIGHT / 2) + 40 * i);
+                ctx.fillText(options[currentOption + i][1], 400, (HEIGHT / 2) + 40 * i);
+            }
         }
-        if (options[currentOption - i]) {
-            ctx.fillText(options[currentOption - i], 50, (HEIGHT / 2) + 40 * -i);
+    }
+    if (options[currentOption - 1]) {
+        if (options[currentOption - 1].length != 2) {
+            ctx.fillText(options[currentOption - 1], 50, (HEIGHT / 2) - 40);
+        }
+        else {
+            ctx.fillText(options[currentOption - 1][0], 50, (HEIGHT / 2) - 40);
+            ctx.fillText(options[currentOption - 1][1], 400, (HEIGHT / 2) - 40);
         }
     }
 }

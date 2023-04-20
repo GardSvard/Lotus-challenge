@@ -19,7 +19,7 @@ const pointScalar = 15;
 
 let playerList = [];
 
-let gameState = "startScreen";
+let gameState = "Menu";
 let currentOption = 0;
 
 let keyPresses = {};
@@ -27,15 +27,15 @@ let keyPresses = {};
 let queue =  [];
 
 let maps = [
-    "plains",
-    "fog",
-    "city"
+    "Plains",
+    "Fog",
+    "City"
 ];
 
 let cars = [
-    "car1",
-    "car2",
-    "car3",
+    "Cool car",
+    "Lightning mc queen",
+    "Block of cheese",
 ];
 
 let menuControls = {
@@ -61,24 +61,24 @@ let gameControls  = {
     p2Shift: "."
 }
 
-let startScreenOptions = [
-    "play",
-    "settings",
-    "credits"
+let menuOptions = [
+    "Play",
+    "Settings",
+    "Credits"
 ];
 
 let playOptions = [
-    "start",
-    ["map", maps[0]],
-    ["playerCount", 1],
-    ["player1Car", "car1"],
-    ["player2Car", "car1"],
+    "Start",
+    ["Map", maps[0]],
+    ["Player Count", 1],
+    ["Player 1 Car", cars[0]],
+    ["player 2 Car", cars[0]],
 ];
 
 let settingsOptions = [
-    ["masterVolume", 50],
-    ["musicVolume", 100],
-    ["fXVolume", 100],
+    ["Master Volume", 50],
+    ["Music Volume", 100],
+    ["FX Volume", 100],
     // ["player1Accelerate", "w"],
     // ["player1Decelerate", "s"],
     // ["player1Left", "a"],
@@ -91,22 +91,22 @@ let settingsOptions = [
     // ["player2Shift", " "]
 ];
 
-let creditsValues = [
-    ["dev1", "gard"],
-    ["dev2", "liam"],
-    ["dev3", "oscar"]
+let creditsOptions = [
+    ["Dev 1", "Gard"],
+    ["Dev 2", "Liam"],
+    ["Dev 3", "Oscar"]
 ];
 
-gameStateChange("startScreen");
+gameStateChange("Menu");
 
 document.onkeydown = function(event) {
-    if (gameState == "game") {
+    if (gameState == "Game") {
         keyPresses[event.key] = true;
     }
 }
 
 document.onkeyup = function(event) {
-    if (gameState == "game") {
+    if (gameState == "Game") {
         keyPresses[event.key] = false;
     }
     else {
