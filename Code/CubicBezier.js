@@ -94,7 +94,7 @@ class CubicBezier {
             // console.log(this.getPoint(t));
             minDist = Math.min(minDist, dist);
         }
-        console.log(minDist)
+        // console.log(minDist)
         return(minDist);
     }
 

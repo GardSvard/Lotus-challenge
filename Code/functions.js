@@ -13,7 +13,7 @@ function drawScreen() {
 
     // ctx.drawImage(background.image, 0, 0);
 
-    let size = [3,10];
+    let size = [3,15];
     let roadSegmentList = bezColl.getPointTangents(15);
     let points = [];
     let edges = [];
@@ -41,12 +41,12 @@ function drawScreen() {
                 vec.rotate2d(Math.PI/2);
                 x += vec.x*(size[0]/2);
                 y += vec.y*(size[0]/2);
-                corners.push(new Vector(x, y, -1));
+                corners.push(new Vector(x, y, -2));
             for (let i = 0; i < 3; i++) {
                 vec.rotate2d(Math.PI/2);
                 x += vec.x*size[!(i % 2)*1];
                 y += vec.y*size[!(i % 2)*1];
-                corners.push(new Vector(x, y, -1));
+                corners.push(new Vector(x, y, -2));
             }
 
             points.push(corners);
@@ -70,41 +70,53 @@ function drawScreen() {
 
             const zDiff = cameraToPointVector.y;
             
-            if (zDiff > cameraDepth) {
+            // if (zDiff > cameraDepth) {
                 let screenScale = cameraDepth/zDiff;
                 screenCoordinates.push([
-                    GAMEWIDTH/2 + points[j][i].x*screenScale*GAMEHEIGHT/2, 
-                    GAMEHEIGHT/2 + points[j][i].z*screenScale*GAMEHEIGHT/2, 
+                    GAMEWIDTH - GAMEWIDTH*(1 + points[j][i].x*screenScale)/2, 
+                    GAMEHEIGHT - GAMEHEIGHT/2 - points[j][i].z*screenScale*GAMEHEIGHT/2, 
                     screenScale]);
-            }
+            // }
         }
     }
 
-    for (let i = 0; i < screenCoordinates.length; i++) {
-        ctx.beginPath();
-        ctx.arc(
-            screenCoordinates[i][0], 
-            screenCoordinates[i][1],
-            20*screenCoordinates[i][2],
-            0, 2*Math.PI
-        );
-        ctx.fill();        
-    }
+    // console.log(screenCoordinates);
+    ctx.fillStyle = 'grey';
 
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 3;
     for (let i = 0; i < edges.length; i++) {
+        ctx.beginPath();
         ctx.moveTo(
-            screenCoordinates[edges[i][0]][0], 
-            screenCoordinates[edges[i][0]][1]
+            screenCoordinates[4*i + edges[i][0]][0], 
+            screenCoordinates[4*i + edges[i][0]][1]
         );
         for (let j = 1; j < edges[i].length; j++) {
-            ctx.lineTo(
-                screenCoordinates[edges[i][j]][0], 
-                screenCoordinates[edges[i][j]][1]
-            ); 
+            if (screenCoordinates[4*i + edges[i][j]][1] > GAMEHEIGHT/2) {
+                ctx.lineTo(
+                    screenCoordinates[4*i + edges[i][j]][0], 
+                    screenCoordinates[4*i + edges[i][j]][1]
+                ); 
+            }
         }
         ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+        
     }
+
+    // ctx.fillStyle = 'black';
+    // for (let i = 0; i < screenCoordinates.length; i++) {
+    //     if (screenCoordinates[i][2] > 0) {
+    //         ctx.beginPath();
+    //         ctx.arc(
+    //             screenCoordinates[i][0], 
+    //             screenCoordinates[i][1],
+    //             40*screenCoordinates[i][2],
+    //             0, 2*Math.PI
+    //         );
+    //         ctx.fill();
+    //     }
+    // }
     
 }
 
@@ -235,35 +247,33 @@ function loop() {
     
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-    if (gameState == "startScreen") {
-        startScreen();
+    if (gameState == "Menu") {
+        menu();
     }
-    else if (gameState == "play") {
+    else if (gameState == "Play") {
         play();
     }
-    else if (gameState == "settings") {
+    else if (gameState == "Settings") {
         settings();
     }
-    else if (gameState == "credits") {
+    else if (gameState == "Credits") {
         credits();
     }
-    else if (gameState == "game") {
+    else if (gameState == "Game") {
         game();
     }
     else {
         console.log("game state error");
     }
 
-    //console.log(keyPresses);
-
     window.requestAnimationFrame(loop);
 }
 
-function startScreen() {
+function menu() {
     scrollQueue();
 
     if (keyPresses[menuControls.select]) {
-        gameStateChange(startScreenOptions[currentOption]);
+        gameStateChange(menuOptions[currentOption]);
     }
 
     currentOption += keyPresses[menuControls.down] - keyPresses[menuControls.up];
@@ -271,11 +281,11 @@ function startScreen() {
     if (currentOption < 0) {
         currentOption = 0;
     }
-    if (currentOption > startScreenOptions.length - 1) {
-        currentOption = startScreenOptions.length - 1;
+    if (currentOption > menuOptions.length - 1) {
+        currentOption = menuOptions.length - 1;
     }
 
-    drawOptions(startScreenOptions);
+    drawOptions(menuOptions);
 
 }
 
@@ -283,18 +293,18 @@ function play() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("startScreen");
+        gameStateChange("Menu");
     }
-    if (keyPresses[menuControls.select] && playOptions[currentOption] == "start") {
-        gameStateChange("game");
+    if (keyPresses[menuControls.select] && playOptions[currentOption] == "Start") {
+        gameStateChange("Game");
     }
-    if (playOptions[currentOption][0] == "map") {
+    if (playOptions[currentOption][0] == "Map") {
         playOptions[currentOption][1] = listScroll(playOptions[currentOption][1], maps);
     }
-    if (playOptions[currentOption][0] == "playerCount") {
+    if (playOptions[currentOption][0] == "Player Count") {
         playOptions[currentOption][1] = slider(playOptions[currentOption][1], 1, 2);
     }
-    if (playOptions[currentOption][0] == "player1Car" || playOptions[currentOption][0] == "player2Car") {
+    if (playOptions[currentOption][0] == "Player 1 Car" || playOptions[currentOption][0] == "Player 2 Car") {
         playOptions[currentOption][1] = listScroll(playOptions[currentOption][1], cars);
     }
 
@@ -315,9 +325,9 @@ function settings() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("startScreen");
+        gameStateChange("Menu");
     }
-    if (settingsOptions[currentOption][0] == "masterVolume" || settingsOptions[currentOption][0] == "musicVolume" || settingsOptions[currentOption][0] == "fXVolume") {
+    if (settingsOptions[currentOption][0] == "Master Volume" || settingsOptions[currentOption][0] == "Music Volume" || settingsOptions[currentOption][0] == "FX Volume") {
         settingsOptions[currentOption][1] = slider(settingsOptions[currentOption][1], 0, 100);
     }
 
@@ -339,9 +349,19 @@ function credits() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("startScreen");
+        gameStateChange("Menu");
     }
-    console.log("credits!!!");
+
+    currentOption += keyPresses[menuControls.down] - keyPresses[menuControls.up];
+
+    if (currentOption < 0) {
+        currentOption = 0;
+    }
+    if (currentOption > settingsOptions.length - 1) {
+        currentOption = settingsOptions.length - 1;
+    }
+
+    drawOptions(creditsOptions);
 }
 
 function game() {
@@ -358,8 +378,8 @@ function game() {
 function gameStateChange(state) {
     queue = [];
     keyPresses = {};
-    if (state == "startScreen") {
-        gameState = "startScreen";
+    if (state == "Menu") {
+        gameState = "Menu";
         keyPresses[menuControls.up] = false;
         keyPresses[menuControls.down] = false;
         keyPresses[menuControls.left] = false;
@@ -368,8 +388,8 @@ function gameStateChange(state) {
         keyPresses[menuControls.back] = false;
         currentOption = 0;
     }
-    else if (state == "play") {
-        gameState = "play";
+    else if (state == "Play") {
+        gameState = "Play";
         keyPresses[menuControls.up] = false;
         keyPresses[menuControls.down] = false;
         keyPresses[menuControls.left] = false;
@@ -378,8 +398,8 @@ function gameStateChange(state) {
         keyPresses[menuControls.back] = false;
         currentOption = 0;
     }
-    else if (state == "settings") {
-        gameState = "settings";
+    else if (state == "Settings") {
+        gameState = "Settings";
         keyPresses[menuControls.up] = false;
         keyPresses[menuControls.down] = false;
         keyPresses[menuControls.left] = false;
@@ -388,13 +408,19 @@ function gameStateChange(state) {
         keyPresses[menuControls.back] = false;
         currentOption = 0;
     }
-    else if (state == "credits") {
-        gameState = "credits";
+    else if (state == "Credits") {
+        gameState = "Credits";
+        keyPresses[menuControls.up] = false;
+        keyPresses[menuControls.down] = false;
+        keyPresses[menuControls.left] = false;
+        keyPresses[menuControls.right] = false;
+        keyPresses[menuControls.select] = false;
         keyPresses[menuControls.back] = false;
+        currentOption = 0;
     }
     
-    else if (state == "game") {
-        gameState = "game";
+    else if (state == "Game") {
+        gameState = "Game";
         keyPresses[gameControls.pause] = false;
         keyPresses[gameControls.p1Accelerate] = false;
         keyPresses[gameControls.p1Decelerate] = false;
@@ -407,14 +433,14 @@ function gameStateChange(state) {
         keyPresses[gameControls.p2Right] = false;
         keyPresses[gameControls.p2Shift] = false;
         playerList = [
-            new Player(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE), "ongelsk")
+            new Player(0, 0, "ongelsk")
         ];
     }
     else {
         console.log("gameStateChange error");
     }
-    console.log(gameState);
-    console.log(keyPresses);
+    // console.log(gameState);
+    // console.log(keyPresses);
 }
 
 
@@ -455,15 +481,39 @@ function scrollQueue() {
 }
 
 function drawOptions(options) {
-    ctx.font = "30px Monocraft";
-    ctx.fillText(options[currentOption], 50, HEIGHT / 2);
 
-    for (let i = 1; i < 5; i++) {
+    ctx.strokeRect(40, HEIGHT / 2 - 35, 350, 45);
+    ctx.font = "70px Monocraft";
+
+    ctx.fillText(gameState, 50, 300)
+
+    ctx.font = "30px Monocraft"
+
+    if (options[currentOption].length != 2) {
+        ctx.fillText(options[currentOption], 50, HEIGHT / 2);
+    }
+    else {
+        ctx.fillText(options[currentOption][0], 50, HEIGHT / 2);
+        ctx.fillText(options[currentOption][1], 400, HEIGHT / 2);
+    }
+    for (let i = 1; i < 10; i++) {
         if (options[currentOption + i]) {
-            ctx.fillText(options[currentOption + i], 50, (HEIGHT / 2) + 40 * i);
+            if (options[currentOption + i].length != 2) {
+                ctx.fillText(options[currentOption + i], 50, (HEIGHT / 2) + 40 * i);
+            }
+            else {
+                ctx.fillText(options[currentOption + i][0], 50, (HEIGHT / 2) + 40 * i);
+                ctx.fillText(options[currentOption + i][1], 400, (HEIGHT / 2) + 40 * i);
+            }
         }
-        if (options[currentOption - i]) {
-            ctx.fillText(options[currentOption - i], 50, (HEIGHT / 2) + 40 * -i);
+    }
+    if (options[currentOption - 1]) {
+        if (options[currentOption - 1].length != 2) {
+            ctx.fillText(options[currentOption - 1], 50, (HEIGHT / 2) - 40);
+        }
+        else {
+            ctx.fillText(options[currentOption - 1][0], 50, (HEIGHT / 2) - 40);
+            ctx.fillText(options[currentOption - 1][1], 400, (HEIGHT / 2) - 40);
         }
     }
 }
