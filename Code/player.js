@@ -63,6 +63,7 @@ class Player extends Car {
         
         preOutput.innerHTML = this.speed;
         preOutput.innerHTML += "\nx: " + Math.round(this.x*100)/100 + "\ty: " + Math.round(this.y*100)/100;
+        // preOutput.innerHTML += "\nx: " + bezColl.score;
 
         let velocityVector = Vector.normalize(this.directionVector);
         velocityVector.scale(this.speed);
