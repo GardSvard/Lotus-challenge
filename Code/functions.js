@@ -13,7 +13,7 @@ function drawScreen() {
 
     // ctx.drawImage(background.image, 0, 0);
 
-    let size = [3,10];
+    let size = [3,15];
     let roadSegmentList = bezColl.getPointTangents(15);
     let points = [];
     let edges = [];
@@ -41,12 +41,12 @@ function drawScreen() {
                 vec.rotate2d(Math.PI/2);
                 x += vec.x*(size[0]/2);
                 y += vec.y*(size[0]/2);
-                corners.push(new Vector(x, y, -1));
+                corners.push(new Vector(x, y, -2));
             for (let i = 0; i < 3; i++) {
                 vec.rotate2d(Math.PI/2);
                 x += vec.x*size[!(i % 2)*1];
                 y += vec.y*size[!(i % 2)*1];
-                corners.push(new Vector(x, y, -1));
+                corners.push(new Vector(x, y, -2));
             }
 
             points.push(corners);
@@ -70,41 +70,53 @@ function drawScreen() {
 
             const zDiff = cameraToPointVector.y;
             
-            if (zDiff > cameraDepth) {
+            // if (zDiff > cameraDepth) {
                 let screenScale = cameraDepth/zDiff;
                 screenCoordinates.push([
-                    GAMEWIDTH/2 + points[j][i].x*screenScale*GAMEHEIGHT/2, 
-                    GAMEHEIGHT/2 + points[j][i].z*screenScale*GAMEHEIGHT/2, 
+                    GAMEWIDTH - GAMEWIDTH*(1 + points[j][i].x*screenScale)/2, 
+                    GAMEHEIGHT - GAMEHEIGHT/2 - points[j][i].z*screenScale*GAMEHEIGHT/2, 
                     screenScale]);
-            }
+            // }
         }
     }
 
-    for (let i = 0; i < screenCoordinates.length; i++) {
-        ctx.beginPath();
-        ctx.arc(
-            screenCoordinates[i][0], 
-            screenCoordinates[i][1],
-            20*screenCoordinates[i][2],
-            0, 2*Math.PI
-        );
-        ctx.fill();        
-    }
+    // console.log(screenCoordinates);
+    ctx.fillStyle = 'grey';
 
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 3;
     for (let i = 0; i < edges.length; i++) {
+        ctx.beginPath();
         ctx.moveTo(
-            screenCoordinates[edges[i][0]][0], 
-            screenCoordinates[edges[i][0]][1]
+            screenCoordinates[4*i + edges[i][0]][0], 
+            screenCoordinates[4*i + edges[i][0]][1]
         );
         for (let j = 1; j < edges[i].length; j++) {
-            ctx.lineTo(
-                screenCoordinates[edges[i][j]][0], 
-                screenCoordinates[edges[i][j]][1]
-            ); 
+            if (screenCoordinates[4*i + edges[i][j]][1] > GAMEHEIGHT/2) {
+                ctx.lineTo(
+                    screenCoordinates[4*i + edges[i][j]][0], 
+                    screenCoordinates[4*i + edges[i][j]][1]
+                ); 
+            }
         }
         ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+        
     }
+
+    // ctx.fillStyle = 'black';
+    // for (let i = 0; i < screenCoordinates.length; i++) {
+    //     if (screenCoordinates[i][2] > 0) {
+    //         ctx.beginPath();
+    //         ctx.arc(
+    //             screenCoordinates[i][0], 
+    //             screenCoordinates[i][1],
+    //             40*screenCoordinates[i][2],
+    //             0, 2*Math.PI
+    //         );
+    //         ctx.fill();
+    //     }
+    // }
     
 }
 
@@ -407,7 +419,7 @@ function gameStateChange(state) {
         keyPresses[gameControls.p2Right] = false;
         keyPresses[gameControls.p2Shift] = false;
         playerList = [
-            new Player(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE), "ongelsk")
+            new Player(0, 0, "ongelsk")
         ];
     }
     else {

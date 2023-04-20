@@ -55,7 +55,7 @@ class Player extends Car {
             keyPresses[this.controlDict.goForwards] 
         )*this.acceleration(this.speed);
         
-        this.speed += acc - this.grassDeceleration()*HZ;
+        this.speed += acc; //- this.grassDeceleration()*HZ;
 
         if (keyPresses[this.controlDict.goBackwards]) {
             this.speed -= this.deceleration();
@@ -90,7 +90,7 @@ class Player extends Car {
             new Vector(this.x, this.y), 10
         );
         if (dist > roadSegmentWidth/2) {
-            console.log('negative speed' + this.speed);
+            // console.log('negative speed' + this.speed);
             return this.speed/2;
         }
         else {
