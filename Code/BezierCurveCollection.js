@@ -69,7 +69,7 @@ class BezierCurveCollection {
             let dist = this.cubicBezList[i].approxDist(P, sampleSize);
             minDist = Math.min(minDist, dist);
         }
-
+        
         return(minDist);
     }
 
