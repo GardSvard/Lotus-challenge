@@ -29,8 +29,8 @@ class Player extends Car {
 
     //draws car as black rectangle with a line pointing up at all times
     drawToMiniMap() {
-        ctx.fillStyle = "black";
-        ctx.fillRect(WIDTH / 2 - this.mapSize[0] / 2, HEIGHT / 2 - this.mapSize[1] / 2, this.mapSize[0], this.mapSize[1]);
+        ctxMap.fillStyle = "black";
+        ctxMap.fillRect(WIDTH / 2 - this.mapSize[0] / 2, HEIGHT / 2 - this.mapSize[1] / 2, this.mapSize[0], this.mapSize[1]);
     }    
 
     update() {
