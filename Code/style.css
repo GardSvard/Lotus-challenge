@@ -1,4 +1,12 @@
-canvas {
+#canvasGfx {
+    width: 320px;
+    height: 180px;
+    border: 1px
+            solid
+            black;
+}
+
+#canvasMap {
     width: 640px;
     height: 400px;
     border: 1px

@@ -273,6 +273,20 @@ class Vector {
         }
     }
 
+    rotate2dXZ(theta) { //tar en liste med koordinater
+        let x = this.x;
+        let y = this.z;
+        this.#x = x*Math.cos(theta) - y*Math.sin(theta);
+        this.#z = x*Math.sin(theta) + y*Math.cos(theta);
+    }
+
+    rotate2dYZ(theta) { //tar en liste med koordinater
+        let x = this.z;
+        let y = this.y;
+        this.#z = x*Math.cos(theta) - y*Math.sin(theta);
+        this.#y = x*Math.sin(theta) + y*Math.cos(theta);
+    }
+
     rotate2d(theta) { //tar en liste med koordinater
         let x = this.x;
         let y = this.y;
