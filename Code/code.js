@@ -45,6 +45,12 @@ const pointScalar = 15;
 let carOverlayObj = new Image();
 carOverlayObj.src = "/spriteSheets/carOverlay.png";
 
+//timer
+var timeLeft;   
+var lastTime;
+var timeNow;
+var dt;
+
 let playerList = [];
 
 let gameState = "Menu";

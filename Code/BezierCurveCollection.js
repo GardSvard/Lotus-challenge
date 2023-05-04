@@ -14,7 +14,7 @@ class BezierCurveCollection {
         this.cubicBezList = [curve1];
         this.currentLastIndex = 0;
         this.renderDist = 3;
-        this.maxTheta = 1.5;
+        this.maxTheta = 0.2;
         this.passedCurrent = curve1.hasPassed(new Vector(0, 0));
         this.scale=curve1.scale;
         for (let i=0; i<this.renderDist; i++) {
@@ -61,7 +61,9 @@ class BezierCurveCollection {
         if (draw) {
             this.renderCurrent();
         }
+        this.maxTheta += 0.05;
         this.score += 1;
+        timeLeft += 3;
     }
 
     approxDistToCurrent(P, sampleSize=5) {
