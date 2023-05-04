@@ -114,7 +114,9 @@ function drawScreen() {
         ctx.drawImage(carOverlayObj, 0, 0, 850, 450);
         ctx.fillStyle = "yellow";
         ctx.fillText("SCORE:", 20, 35);
-        ctx.fillText((bezColl.currentLastIndex-2).toString(), 140, 35);
+        ctx.fillText(score.toString(), 140, 35);
+        ctx.fillText("TIME LEFT:", 180, 35);
+        ctx.fillText((Math.round(timeLeft)).toString(), 350, 35);
         ctx.fillStyle = "grey";
         
     }
@@ -382,6 +384,14 @@ function game() {
 
     bezColl.updatePassed(new Vector(playerList[0].x, playerList[0].y));
 
+    timeNow = Date.now();
+    dt = timeNow - lastTime;
+    lastTime = timeNow;
+    timeLeft -= dt/1000;
+    if(timeLeft<0) {
+        gameStateChange("Menu");
+    }
+
     drawScreen();
     drawMiniMap();
 }
@@ -446,6 +456,11 @@ function gameStateChange(state) {
         playerList = [
             new Player(0, 0, "ongelsk")
         ];
+
+        lastTime = Date.now();
+        timeLeft = 30; //reset timer
+        score = 0;
+        bezColl.currentLastIndex = 2;
     }
     else {
         console.log("gameStateChange error");
