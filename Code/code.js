@@ -35,10 +35,6 @@ let roadSegmentLength = 15; //everything is given in meters
 let roadSegmentWidth = 8;
 const pointScalar = 15;
 
-//sprites
-let carOverlayObj = new Image();
-carOverlayObj.src = "/spriteSheets/carOverlay.png";
-
 let playerList = [];
 
 let gameState = "Cotus LurboThallenge";
