@@ -13,7 +13,7 @@ function drawScreen() {
 
     // ctx.drawImage(background.image, 0, 0);
 
-    let size = [3,15];
+    let size = [roadSegmentWidth, roadSegmentLength];
     let roadSegmentList = bezColl.getPointTangents(15);
     let points = [];
     let edges = [];
@@ -52,6 +52,14 @@ function drawScreen() {
             points.push(corners);
             edges.push([0,1,2,3,0]);
         } 
+
+        // let P = new Plant   ({
+        //                         "X": "F-[[X]+X]+F[+FX]-X",
+        //                         "F": "FF"
+        //                     }, 25);
+
+        // let txt = (P.cycleMultiple("X", 6));
+        // P.drawBranchStack(txt, new Vector(WIDTH/4, HEIGHT/2), new Vector(3, 0));
     }
 
 
@@ -101,6 +109,13 @@ function drawScreen() {
         ctx.stroke();
         ctx.fill();
         ctx.closePath();
+
+        //draw car pov and score, rotete ik -liam
+        ctx.drawImage(carOverlayObj, 0, 0, 850, 450);
+        ctx.fillStyle = "yellow";
+        ctx.fillText("SCORE:", 20, 35);
+        ctx.fillText((bezColl.currentLastIndex-2).toString(), 140, 35);
+        ctx.fillStyle = "grey";
         
     }
 

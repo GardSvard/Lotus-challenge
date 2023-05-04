@@ -15,13 +15,13 @@ class BezierCurveCollection {
         this.currentLastIndex = 0;
         this.renderDist = 3;
         this.maxTheta = 1.5;
-        this.score = 0;
         this.passedCurrent = curve1.hasPassed(new Vector(0, 0));
         this.scale=curve1.scale;
         for (let i=0; i<this.renderDist; i++) {
             this.nextSection();
         }
         this.currentLastIndex = this.renderDist-1;
+        this.score = 0;
     }
 
     renderCurrent() {
