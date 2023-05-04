@@ -47,13 +47,14 @@ class Player extends Car {
             let turn = (
                 keyPresses[this.controlDict.turnRight] - 
                 keyPresses[this.controlDict.turnLeft]
-            )*Math.PI/100;
+            ) * Math.PI / 1000;
+            
             this.directionVector.rotate2d(turn);
         }
 
         let acc = (
             keyPresses[this.controlDict.goForwards] 
-        )*this.acceleration(this.speed);
+        ) * this.acceleration(this.speed);
         
         this.speed += acc; //- this.grassDeceleration()*HZ;
 
@@ -62,21 +63,21 @@ class Player extends Car {
         }
         
         preOutput.innerHTML = this.speed;
-        preOutput.innerHTML += "\nx: " + Math.round(this.x*100)/100 + "\ty: " + Math.round(this.y*100)/100;
+        preOutput.innerHTML += "\nx: " + Math.round(this.x * 100) / 100 + "\ty: " + Math.round(this.y * 100) / 100;
         // preOutput.innerHTML += "\nx: " + bezColl.score;
 
         let velocityVector = Vector.normalize(this.directionVector);
         velocityVector.scale(this.speed);
         
-        this.x += velocityVector.x*HZ;
-        this.y += velocityVector.y*HZ;
+        this.x += velocityVector.x * HZ;
+        this.y += velocityVector.y * HZ;
     }
 
     acceleration(speed) {
         //f(x) = sqrt(acceleration^2 - (x/10)^2)
-        let temp = this.accelerationTop2 - (speed/12)**2;
+        let temp = this.accelerationTop2 - (speed / 12) ** 2;
         if (temp > 0) {
-            return Math.sqrt(temp)*HZ;
+            return Math.sqrt(temp) * HZ;
         } else {return 0;}
     }
 

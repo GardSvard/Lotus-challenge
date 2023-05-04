@@ -104,36 +104,36 @@ function drawScreen() {
         
     }
 
-    // ctx.fillStyle = 'black';
-    // for (let i = 0; i < screenCoordinates.length; i++) {
-    //     if (screenCoordinates[i][2] > 0) {
-    //         ctx.beginPath();
-    //         ctx.arc(
-    //             screenCoordinates[i][0], 
-    //             screenCoordinates[i][1],
-    //             40*screenCoordinates[i][2],
-    //             0, 2*Math.PI
-    //         );
-    //         ctx.fill();
-    //     }
-    // }
+    ctx.fillStyle = 'black';
+    for (let i = 0; i < screenCoordinates.length; i++) {
+        if (screenCoordinates[i][2] > 0) {
+            ctx.beginPath();
+            ctx.arc(
+                screenCoordinates[i][0], 
+                screenCoordinates[i][1],
+                40*screenCoordinates[i][2],
+                0, 2*Math.PI
+            );
+            ctx.fill();
+        }
+    }
     
 }
 
 function drawMiniMap() {
     //draws the minimap
     ctxMap.fillStyle = "green";
-    ctxMap.fillRect(0, 0, WIDTH, HEIGHT);
+    ctxMap.fillRect(0, 0, WIDTH,GAMEHEIGHT);
     
     let roadSegmentList = bezColl.getPointTangents(15);
 
     // let roadSegmentList = [
     //     {
-    //         point  : new Vector(WIDTH/(2*WORLDSCALE), HEIGHT/(2*WORLDSCALE) - 50),
+    //         point  : new Vector(WIDTH/(2*WORLDSCALE),GAMEHEIGHT/(2*WORLDSCALE) - 50),
     //         tangent: new Vector(0,-1)
     //     },
     //     {
-    //         point  : new Vector(WIDTH/(2*WORLDSCALE) + 50, HEIGHT/(2*WORLDSCALE) - 50),
+    //         point  : new Vector(WIDTH/(2*WORLDSCALE) + 50,GAMEHEIGHT/(2*WORLDSCALE) - 50),
     //         tangent: new Vector(1,-1)
     //     }
     // ]
@@ -170,7 +170,7 @@ function drawMiniMap() {
         // drawRelativeCircle(playerList[0], plant.position, plant.size, plant.color);
     }
 
-    let stoneCenterPos = new Vector(WIDTH/(2*WORLDSCALE) - 10, HEIGHT/(2*WORLDSCALE) - 20);
+    let stoneCenterPos = new Vector(WIDTH/(2*WORLDSCALE) - 10,GAMEHEIGHT/(2*WORLDSCALE) - 20);
     let stoneRadius = 2;
     drawRelativeCircle(playerList[0], stoneCenterPos, stoneRadius, 'black');
 
@@ -186,7 +186,7 @@ function drawRelativeVectorRect(player, centerVector, directionVectorOriginal, s
     diffVector.rotate2d(player.directionVector.angle);
     directionVector.rotate2d(player.directionVector.angle);
 
-    drawVectorRect(WIDTH/2 - diffVector.x*WORLDSCALE, HEIGHT/2 - diffVector.y*WORLDSCALE, 
+    drawVectorRect(WIDTH/2 - diffVector.x*WORLDSCALE,GAMEHEIGHT/2 - diffVector.y*WORLDSCALE, 
         directionVector, 
         size, 
         color
@@ -204,7 +204,7 @@ function drawRelativeCircle(player, centerVector, size, color) {
     ctxMap.beginPath();
     ctxMap.arc(
         WIDTH/2 - diffVector.x*WORLDSCALE, 
-        HEIGHT/2 - diffVector.y*WORLDSCALE,
+       GAMEHEIGHT/2 - diffVector.y*WORLDSCALE,
         size*WORLDSCALE, 0, 2*Math.PI
     );
     ctxMap.fill();
@@ -245,9 +245,9 @@ function drawVectorRect(centerX, centerY, directionVector, size, color) {
 
 function loop() {
     
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.clearRect(0, 0, WIDTH,GAMEHEIGHT);
 
-    if (gameState == "Menu") {
+    if (gameState == "Cotus Lurbo Thallenge") {
         menu();
     }
     else if (gameState == "Play") {
@@ -293,21 +293,17 @@ function play() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("Menu");
+        gameStateChange("Cotus Lurbo Thallenge");
     }
     if (keyPresses[menuControls.select] && playOptions[currentOption] == "Start") {
         gameStateChange("Game");
     }
-    if (playOptions[currentOption][0] == "Map") {
-        playOptions[currentOption][1] = listScroll(playOptions[currentOption][1], maps);
-    }
-    if (playOptions[currentOption][0] == "Player Count") {
-        playOptions[currentOption][1] = slider(playOptions[currentOption][1], 1, 2);
-    }
-    if (playOptions[currentOption][0] == "Player 1 Car" || playOptions[currentOption][0] == "Player 2 Car") {
+    // if (playOptions[currentOption][0] == "Map") {
+    //     playOptions[currentOption][1] = listScroll(playOptions[currentOption][1], maps);
+    // }
+    if (playOptions[currentOption][0] == "Car") {
         playOptions[currentOption][1] = listScroll(playOptions[currentOption][1], cars);
     }
-
 
     currentOption += keyPresses[menuControls.down] - keyPresses[menuControls.up];
 
@@ -325,7 +321,7 @@ function settings() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("Menu");
+        gameStateChange("Cotus Lurbo Thallenge");
     }
     if (settingsOptions[currentOption][0] == "Master Volume" || settingsOptions[currentOption][0] == "Music Volume" || settingsOptions[currentOption][0] == "FX Volume") {
         settingsOptions[currentOption][1] = slider(settingsOptions[currentOption][1], 0, 100);
@@ -349,7 +345,7 @@ function credits() {
     scrollQueue();
 
     if (keyPresses[menuControls.back]) {
-        gameStateChange("Menu");
+        gameStateChange("Cotus Lurbo Thallenge");
     }
 
     currentOption += keyPresses[menuControls.down] - keyPresses[menuControls.up];
@@ -378,8 +374,8 @@ function game() {
 function gameStateChange(state) {
     queue = [];
     keyPresses = {};
-    if (state == "Menu") {
-        gameState = "Menu";
+    if (state == "Cotus Lurbo Thallenge") {
+        gameState = "Cotus Lurbo Thallenge";
         keyPresses[menuControls.up] = false;
         keyPresses[menuControls.down] = false;
         keyPresses[menuControls.left] = false;
@@ -482,38 +478,51 @@ function scrollQueue() {
 
 function drawOptions(options) {
 
-    ctx.strokeRect(40, HEIGHT / 2 - 35, 350, 45);
-    ctx.font = "70px Monocraft";
+    let textMargin = GAMEWIDTH / 20;
+    let optionMargin = GAMEWIDTH / 3
+    let textSpacing = GAMEWIDTH / 30
+    let titleSize = GAMEWIDTH / 30;
+    let textSize = GAMEWIDTH / 40;
+    let textCenter = GAMEWIDTH / 5
 
-    ctx.fillText(gameState, 50, 300)
 
-    ctx.font = "30px Monocraft"
+    // ctx.strokeRect(40,GAMEHEIGHT / 2 - 35, 350, 45);
+
+    ctx.font = titleSize + "px Monocraft";
+    ctx.fillText(gameState, textMargin, 150);
+
+    ctx.font = textSize + "px Monocraft";
 
     if (options[currentOption].length != 2) {
-        ctx.fillText(options[currentOption], 50, HEIGHT / 2);
+        ctx.fillText(options[currentOption], textMargin, textCenter);
     }
     else {
-        ctx.fillText(options[currentOption][0], 50, HEIGHT / 2);
-        ctx.fillText(options[currentOption][1], 400, HEIGHT / 2);
+        ctx.fillText(options[currentOption][0], textMargin, textCenter);
+        ctx.fillText(options[currentOption][1], optionMargin, textCenter);
     }
+
     for (let i = 1; i < 10; i++) {
+        ctx.font = (textSize - 15 * i) + "px Monocraft";
+
         if (options[currentOption + i]) {
             if (options[currentOption + i].length != 2) {
-                ctx.fillText(options[currentOption + i], 50, (HEIGHT / 2) + 40 * i);
+                ctx.fillText(options[currentOption + i], textMargin, (textCenter) + textSpacing * i);
             }
             else {
-                ctx.fillText(options[currentOption + i][0], 50, (HEIGHT / 2) + 40 * i);
-                ctx.fillText(options[currentOption + i][1], 400, (HEIGHT / 2) + 40 * i);
+                ctx.fillText(options[currentOption + i][0], textMargin, (textCenter) + textSpacing * i);
+                ctx.fillText(options[currentOption + i][1], optionMargin, (textCenter) + textSpacing * i);
             }
         }
     }
     if (options[currentOption - 1]) {
+        ctx.font = (textSize - 15) + "px Monocraft";
+
         if (options[currentOption - 1].length != 2) {
-            ctx.fillText(options[currentOption - 1], 50, (HEIGHT / 2) - 40);
+            ctx.fillText(options[currentOption - 1], textMargin, (textCenter) - textSpacing);
         }
         else {
-            ctx.fillText(options[currentOption - 1][0], 50, (HEIGHT / 2) - 40);
-            ctx.fillText(options[currentOption - 1][1], 400, (HEIGHT / 2) - 40);
+            ctx.fillText(options[currentOption - 1][0], textMargin, (textCenter) - textSpacing);
+            ctx.fillText(options[currentOption - 1][1], optionMargin, (textCenter) - textSpacing);
         }
     }
 }
