@@ -46,10 +46,11 @@ let carOverlayObj = new Image();
 carOverlayObj.src = "/spriteSheets/carOverlay.png";
 
 //timer
-var timeLeft;   
-var lastTime;
-var timeNow;
-var dt;
+let timeLeft;   
+let lastTime;
+let timeNow;
+let dt;
+let score;
 
 let playerList = [];
 

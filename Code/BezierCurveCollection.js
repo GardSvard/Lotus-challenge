@@ -64,6 +64,7 @@ class BezierCurveCollection {
         this.maxTheta += 0.05;
         this.score += 1;
         timeLeft += 3;
+        score += 1;
     }
 
     approxDistToCurrent(P, sampleSize=5) {
