@@ -43,7 +43,7 @@ const pointScalar = 15;
 
 //sprites
 let carOverlayObj = new Image();
-carOverlayObj.src = "/spriteSheets/carOverlay.png";
+carOverlayObj.src = "spriteSheets/carOverlay.png";
 
 //timer
 let timeLeft;   
