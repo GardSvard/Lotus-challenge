@@ -114,16 +114,13 @@ function drawScreen() {
         ctx.drawImage(skyObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT/2);
         ctx.drawImage(carOverlayObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT);
         let scoreY = 50;
-        ctx.font = "40px Monocraft"
+        ctx.font = "40px Monocraft";
         ctx.fillStyle = "yellow";
-        let scoretimeTXT = 0;
-        ctx.fillText("SCORE:", 20, scoreY);
-        ctx.fillText(score.toString(), 170, scoreY);
-        ctx.fillText("TIME LEFT:", 230, scoreY);
-        ctx.fillText((Math.round(timeLeft)).toString(), 460, scoreY);
-        ctx.fillText("SPEED:", 20, scoreY*2);
+        let scoretimeTXT = "SCORE: ".concat(score.toString(), "    TIME LEFT: ", (Math.round(timeLeft)).toString());
+        ctx.fillText(scoretimeTXT, 20, scoreY);
         let speed = playerList[0].speed*3.6;
-        ctx.fillText((Math.round(speed)).toString(), 170, scoreY*2);
+        let speedTXT = "SPEED: ".concat((Math.round(speed)).toString());
+        ctx.fillText(speedTXT, 20, scoreY*2);
         ctx.fillStyle = "grey";
         
     }
