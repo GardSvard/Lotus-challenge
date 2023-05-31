@@ -111,29 +111,35 @@ function drawScreen() {
         ctx.closePath();
 
         //draw car pov and score, rotete ik -liam
-        ctx.drawImage(carOverlayObj, 0, 0, 850, 450);
+        ctx.drawImage(carOverlayObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT);
+        let scoreY = 50;
+        ctx.font = "40px Monocraft"
         ctx.fillStyle = "yellow";
-        ctx.fillText("SCORE:", 20, 35);
-        ctx.fillText(score.toString(), 140, 35);
-        ctx.fillText("TIME LEFT:", 180, 35);
-        ctx.fillText((Math.round(timeLeft)).toString(), 350, 35);
+        ctx.fillText("SCORE:", 20, scoreY);
+        ctx.fillText(score.toString(), 170, scoreY);
+        ctx.fillText("TIME LEFT:", 230, scoreY);
+        ctx.fillText((Math.round(timeLeft)).toString(), 460, scoreY);
+        ctx.fillText("SPEED:", 20, scoreY*2);
+        let speed = playerList[0].speed*3.6;
+        ctx.fillText((Math.round(speed)).toString(), 170, scoreY*2);
         ctx.fillStyle = "grey";
         
     }
 
-    ctx.fillStyle = 'black';
-    for (let i = 0; i < screenCoordinates.length; i++) {
-        if (screenCoordinates[i][2] > 0) {
-            ctx.beginPath();
-            ctx.arc(
-                screenCoordinates[i][0], 
-                screenCoordinates[i][1],
-                40*screenCoordinates[i][2],
-                0, 2*Math.PI
-            );
-            ctx.fill();
-        }
-    }
+    //prikker
+    // ctx.fillStyle = 'black';
+    // for (let i = 0; i < screenCoordinates.length; i++) {
+    //     if (screenCoordinates[i][2] > 0) {
+    //         ctx.beginPath();
+    //         ctx.arc(
+    //             screenCoordinates[i][0], 
+    //             screenCoordinates[i][1],
+    //             40*screenCoordinates[i][2],
+    //             0, 2*Math.PI
+    //         );
+    //         ctx.fill();
+    //     }
+    // }
     
 }
 
@@ -262,7 +268,7 @@ function drawVectorRect(centerX, centerY, directionVector, size, color) {
 
 function loop() {
     
-    ctx.clearRect(0, 0, WIDTH,GAMEHEIGHT);
+    ctx.clearRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
 
     if (gameState == "Cotus Lurbo Thallenge") {
         menu();
@@ -389,7 +395,7 @@ function game() {
     lastTime = timeNow;
     timeLeft -= dt/1000;
     if(timeLeft<0) {
-        gameStateChange("Menu");
+        gameStateChange("Play");
     }
 
     drawScreen();
@@ -408,6 +414,7 @@ function gameStateChange(state) {
         keyPresses[menuControls.select] = false;
         keyPresses[menuControls.back] = false;
         currentOption = 0;
+        canvasMap.style.display = "none";
     }
     else if (state == "Play") {
         gameState = "Play";
@@ -418,6 +425,7 @@ function gameStateChange(state) {
         keyPresses[menuControls.select] = false;
         keyPresses[menuControls.back] = false;
         currentOption = 0;
+        canvasMap.style.display = "none";
     }
     else if (state == "Settings") {
         gameState = "Settings";
@@ -428,6 +436,7 @@ function gameStateChange(state) {
         keyPresses[menuControls.select] = false;
         keyPresses[menuControls.back] = false;
         currentOption = 0;
+        canvasMap.style.display = "none";
     }
     else if (state == "Credits") {
         gameState = "Credits";
@@ -438,6 +447,7 @@ function gameStateChange(state) {
         keyPresses[menuControls.select] = false;
         keyPresses[menuControls.back] = false;
         currentOption = 0;
+        canvasMap.style.display = "none";
     }
     
     else if (state == "Game") {
@@ -461,6 +471,7 @@ function gameStateChange(state) {
         timeLeft = 30; //reset timer
         score = 0;
         bezColl.currentLastIndex = 2;
+        canvasMap.style.display = "";
     }
     else {
         console.log("gameStateChange error");

@@ -5,7 +5,7 @@
 const canvasGFX = document.getElementById("canvasGFX");
 const ctx = canvasGFX.getContext("2d");
 ctx.imageSmoothingEnabled = false; //turns off antialiasing
-
+let canvasMap = document.getElementById("canvasMap");
 let ctxMap = canvasMap.getContext("2d");
 
 const WORLDSCALE = 5; //scales up from meters to pixels, lower number, more zoomed out
