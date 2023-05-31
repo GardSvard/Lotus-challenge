@@ -396,8 +396,8 @@ function game() {
     dt = timeNow - lastTime;
     lastTime = timeNow;
     timeLeft -= dt/1000;
-    if(timeLeft<0) {
-        gameStateChange("Play");
+    if (timeLeft < 0) {
+        gameStateChange("Cotus Lurbo Thallenge");
     }
 
     drawScreen();
@@ -530,6 +530,8 @@ function drawOptions(options) {
 
 
     // ctx.strokeRect(40,GAMEHEIGHT / 2 - 35, 350, 45);
+
+    ctx.fillStyle = "black";
 
     ctx.font = titleSize + "px Monocraft";
     ctx.fillText(gameState, textMargin, 150);

@@ -64,7 +64,7 @@ class CubicBezier {
 
 
     drawCurve() {
-        for (let t =0; t<=1; t+=0.01) {
+        for (let t=0; t<=1; t+=0.01) {
             this.getPoint(t, true);
         }
 
