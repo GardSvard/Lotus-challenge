@@ -111,10 +111,12 @@ function drawScreen() {
         ctx.closePath();
 
         //draw car pov and score, rotete ik -liam
+        ctx.drawImage(skyObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT/2);
         ctx.drawImage(carOverlayObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT);
         let scoreY = 50;
         ctx.font = "40px Monocraft"
         ctx.fillStyle = "yellow";
+        let scoretimeTXT = 0;
         ctx.fillText("SCORE:", 20, scoreY);
         ctx.fillText(score.toString(), 170, scoreY);
         ctx.fillText("TIME LEFT:", 230, scoreY);
