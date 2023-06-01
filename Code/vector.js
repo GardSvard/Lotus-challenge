@@ -84,6 +84,10 @@ class Vector {
         return Math.atan2(Vector.length(x, y), z);
     }
 
+    changeZ(z) {
+        this.#z = z;
+    }
+
     //D3 = 3D, if its a 3D vector
     static randomVectorCoordinates(length = 1, D3 = false) {
         let x = Math.random();

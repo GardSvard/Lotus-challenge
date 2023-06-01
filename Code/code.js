@@ -36,7 +36,7 @@ const GAMEWIDTH = ctx.canvas.width = 800;
     ;
 
 
-let renderDistance = 250; //100 meters
+let renderDistance = 500;
 let roadSegmentLength = 15; //everything is given in meters
 let roadSegmentWidth = 8;
 const pointScalar = 15;

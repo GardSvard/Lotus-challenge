@@ -1,41 +1,16 @@
 'use strict';
 
+function generateCorners(pointOriginal, cameraPosition, tangent, angle, size) {
 
-function drawScreen() {
+    let point = Vector.copy(pointOriginal);
 
-    ctx.clearRect(0,0,GAMEWIDTH,GAMEHEIGHT);
-
-    //draws the main screen
-    // let background = {
-    //     image : new Image()
-    // }
-    // background.image.src = "./spriteSheets/backgroundDay.png";
-
-    // ctx.drawImage(background.image, 0, 0);
-
-    let size = [3,15];
-    let roadSegmentList = bezColl.getPointTangents(15);
-    let points = [];
-    let edges = [];
-
-    for (let i = 0; i < roadSegmentList.length; i++) {
-
-        if (
-            Math.abs(roadSegmentList[i].point.x - playerList[0].x) < renderDistance &&
-            Math.abs(roadSegmentList[i].point.y - playerList[0].y) < renderDistance
-            ) {
-            
-            let relativeCenterVector = Vector.subtract(
-                roadSegmentList[i].point,  new Vector(playerList[0].x, playerList[0].y)
-            );
-
-            let vec = Vector.normalize(roadSegmentList[i].tangent);
-            relativeCenterVector.rotate2d(playerList[0].directionVector.angle);
-            vec.rotate2d(playerList[0].directionVector.angle);
+    let vec = Vector.normalize(tangent);
+            point.rotate2d(angle);
+            vec.rotate2d(angle);
 
             let corners = [];
-                let x = relativeCenterVector.x;
-                let y = relativeCenterVector.y;
+                let x = point.x;
+                let y = point.y;
                 x += vec.x*(size[1]/2);
                 y += vec.y*(size[1]/2);
                 vec.rotate2d(Math.PI/2);
@@ -49,74 +24,157 @@ function drawScreen() {
                 corners.push(new Vector(x, y, -2));
             }
 
-            points.push(corners);
-            edges.push([0,1,2,3,0]);
-        } 
+            let cornerScreenCoordinates = [];
+
+            for (let i = 0; i < corners.length; i++) {
+                cornerScreenCoordinates.push(generatePoint(corners[i], cameraPosition));
+            }
+
+            return cornerScreenCoordinates;
+            
+}
+
+function generatePoint(pointO, cameraPosition) { 
+
+    let point = Vector.copy(pointO);
+    point.changeZ(-2);
+
+    let cameraToPointVector = new Vector(
+        point.x - cameraPosition.x,
+        point.y - cameraPosition.y,
+        point.z - cameraPosition.z
+    );
+
+    const zDiff = cameraToPointVector.y;
+    let screenScale = cameraDepth/zDiff;
+
+    return [
+        GAMEWIDTH - GAMEWIDTH*(1 + point.x*screenScale)/2, 
+        GAMEHEIGHT - GAMEHEIGHT/2 - point.z*screenScale*GAMEHEIGHT/2, 
+        screenScale
+    ];
+
+}
+
+function renderScreenPoints(points, edges, color) {
+    
+    ctx.fillStyle = color;
+
+    ctx.lineWidth = 3;
+    console.log(points, edges);
+    for (let k = 0; k < points.length; k++) {
+        ctx.beginPath();
+        if (points[k][edges[0]][1] > GAMEHEIGHT/2) {
+            ctx.moveTo(
+                points[k][edges[0]][0], 
+                points[k][edges[0]][1]
+            ); 
+        } else {
+            ctx.moveTo(
+                points[k + 1][edges[0]][0], 
+                GAMEHEIGHT*3
+            ); 
+        }
+        
+        for (let i = 1; i < edges.length; i++) {
+            if (points[k][edges[i]][1] > GAMEHEIGHT/2) {
+                ctx.lineTo(
+                    points[k][edges[i]][0], 
+                    points[k][edges[i]][1]
+                ); 
+            } else {
+                ctx.lineTo(
+                    GAMEWIDTH/2 - 3*(GAMEWIDTH/2 - points[k + 1][edges[i]][0]), 
+                    GAMEHEIGHT*2
+                ); 
+            }
+        }
+        ctx.fill();
+        ctx.closePath();
+        // ctx.beginPath();
+        // ctx.arc(
+        //     points[k][edges[0]][0], 
+        //     points[k][edges[0]][1],
+        //     20, 0, 2*Math.PI
+        // );
+        // ctx.fill();
+        // ctx.closePath();
     }
 
+}
+
+function drawScreen() {
+
+    ctx.clearRect(0,0,GAMEWIDTH,GAMEHEIGHT);
+
+    //draws the main screen
+    // let background = {
+    //     image : new Image()
+    // }
+    // background.image.src = "./spriteSheets/backgroundDay.png";
+
+    // ctx.drawImage(background.image, 0, 0);
+
+    let roadSize = [3,20];
+    let stripeSize = [0.15,3];
+
+    let roadSegmentList = bezColl.getPointTangents(15);
+    let points = [];
+    let edges = [0,1,2,3,0];
+    let roadScreenCoordinates = [];
+    let stripeScreenCoordinates = [];
+
+    for (let i = 0; i < roadSegmentList.length; i++) {
+
+        if (
+            Math.abs(roadSegmentList[i].point.x - playerList[0].x) < renderDistance &&
+            Math.abs(roadSegmentList[i].point.y - playerList[0].y) < renderDistance
+            ) {
+            
+            let relativeCenterVector = Vector.subtract(
+                roadSegmentList[i].point,  new Vector(playerList[0].x, playerList[0].y)
+            );
+
+            roadScreenCoordinates.push(
+                generateCorners(relativeCenterVector, 
+                    cameraPosition,
+                    roadSegmentList[i].tangent, 
+                    playerList[0].directionVector.angle,
+                    roadSize
+                )
+            );
+
+            stripeScreenCoordinates.push(
+                generateCorners(relativeCenterVector, 
+                    cameraPosition,
+                    roadSegmentList[i].tangent, 
+                    playerList[0].directionVector.angle,
+                    stripeSize
+                )
+            );
+        } 
+    }
 
     ctx.fillStyle = 'green';
     ctx.fillRect(0, GAMEHEIGHT/2, GAMEWIDTH, GAMEHEIGHT/2);
 
-    let screenCoordinates = [];
-
-    for (let j = 0; j < points.length; j++) {
-        for (let i = 0; i < points[j].length; i++) {
-            let cameraToPointVector = new Vector(
-                points[j][i].x - cameraPosition.x,
-                points[j][i].y - cameraPosition.y,
-                points[j][i].z - cameraPosition.z
-            );
-
-            const zDiff = cameraToPointVector.y;
-            
-            // if (zDiff > cameraDepth) {
-                let screenScale = cameraDepth/zDiff;
-                screenCoordinates.push([
-                    GAMEWIDTH - GAMEWIDTH*(1 + points[j][i].x*screenScale)/2, 
-                    GAMEHEIGHT - GAMEHEIGHT/2 - points[j][i].z*screenScale*GAMEHEIGHT/2, 
-                    screenScale]);
-            // }
-        }
-    }
-
-    // console.log(screenCoordinates);
-    ctx.fillStyle = 'grey';
-
-    ctx.lineWidth = 3;
-    for (let i = 0; i < edges.length; i++) {
-        ctx.beginPath();
-        ctx.moveTo(
-            screenCoordinates[4*i + edges[i][0]][0], 
-            screenCoordinates[4*i + edges[i][0]][1]
-        );
-        for (let j = 1; j < edges[i].length; j++) {
-            if (screenCoordinates[4*i + edges[i][j]][1] > GAMEHEIGHT/2) {
-                ctx.lineTo(
-                    screenCoordinates[4*i + edges[i][j]][0], 
-                    screenCoordinates[4*i + edges[i][j]][1]
-                ); 
-            }
-        }
-        ctx.stroke();
-        ctx.fill();
-        ctx.closePath();
-        
-    }
-
     // ctx.fillStyle = 'black';
-    // for (let i = 0; i < screenCoordinates.length; i++) {
-    //     if (screenCoordinates[i][2] > 0) {
+    // for (let i = 0; i < roadScreenCoordinates.length; i++) {
+    //     if (roadScreenCoordinates[i][0][2] > 0) {
     //         ctx.beginPath();
+    //         
     //         ctx.arc(
-    //             screenCoordinates[i][0], 
-    //             screenCoordinates[i][1],
-    //             40*screenCoordinates[i][2],
+    //             roadScreenCoordinates[i][0][0], 
+    //             roadScreenCoordinates[i][0][1], 
+    //             10*roadScreenCoordinates[i][0][2],
     //             0, 2*Math.PI
-    //         );
+    //             );
     //         ctx.fill();
     //     }
     // }
+
+    renderScreenPoints(roadScreenCoordinates, edges, 'grey');
+    renderScreenPoints(stripeScreenCoordinates, edges, 'yellow');
     
 }
 
@@ -517,3 +575,5 @@ function drawOptions(options) {
         }
     }
 }
+
+
