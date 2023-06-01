@@ -38,8 +38,10 @@ const pointScalar = 15;
 //sprites
 let carOverlayObj = new Image();
 carOverlayObj.src = "spriteSheets/carOverlay.png";
+let cheeseCarOverlayObj = new Image();
+cheeseCarOverlayObj.src = "spriteSheets/cheese_car_interior.png";
 let skyObj = new Image();
-skyObj.src = "spriteSheets/backgroundDay.png";
+skyObj.src = "spriteSheets/skyBox.png";
 
 //timer
 let timeLeft;   
