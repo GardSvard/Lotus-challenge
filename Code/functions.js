@@ -111,7 +111,9 @@ function drawScreen() {
         ctx.closePath();
 
         //draw car pov and score, rotete ik -liam
-        ctx.drawImage(skyObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT/2);
+        let skyX = GAMEWIDTH*(playerList[0].directionVector.angle/(2*Math.PI)-0.5);
+        console.log(playerList[0].directionVector.angle, skyX);
+        ctx.drawImage(skyObj, skyX, 0, GAMEWIDTH*2, GAMEHEIGHT/2);
         ctx.drawImage(carOverlayObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT);
         let scoreY = 50;
         ctx.font = "40px Monocraft";
