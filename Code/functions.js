@@ -158,6 +158,24 @@ function drawScreen() {
     ctx.fillStyle = 'green';
     ctx.fillRect(0, GAMEHEIGHT/2, GAMEWIDTH, GAMEHEIGHT/2);
 
+    
+        //draw car pov and score, rotete ik -liam
+        let skyX = GAMEWIDTH*(playerList[0].directionVector.angle/(2*Math.PI)-0.5);
+        console.log(playerList[0].directionVector.angle, skyX);
+        ctx.drawImage(skyObj, skyX, 0, GAMEWIDTH*2, GAMEHEIGHT/2);
+        ctx.drawImage(carOverlayObj, 0, 0, GAMEWIDTH*1.1, GAMEHEIGHT);
+        let scoreY = 50;
+        ctx.font = "40px Monocraft";
+        ctx.fillStyle = "yellow";
+        let scoretimeTXT = "SCORE: ".concat(score.toString(), "    TIME LEFT: ", (Math.round(timeLeft)).toString());
+        ctx.fillText(scoretimeTXT, 20, scoreY);
+        let speed = playerList[0].speed*3.6;
+        let speedTXT = "SPEED: ".concat((Math.round(speed)).toString());
+        ctx.fillText(speedTXT, 20, scoreY*2);
+        ctx.fillStyle = "grey";
+        
+
+
     renderScreenPoints(roadScreenCoordinates, edges, 'grey');
     renderScreenPoints(stripeScreenCoordinates, edges, 'yellow');
     
