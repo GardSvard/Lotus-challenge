@@ -153,33 +153,10 @@ function drawScreen() {
                 )
             );
         } 
-
-        // let P = new Plant   ({
-        //                         "X": "F-[[X]+X]+F[+FX]-X",
-        //                         "F": "FF"
-        //                     }, 25);
-
-        // let txt = (P.cycleMultiple("X", 6));
-        // P.drawBranchStack(txt, new Vector(WIDTH/4, HEIGHT/2), new Vector(3, 0));
     }
 
     ctx.fillStyle = 'green';
     ctx.fillRect(0, GAMEHEIGHT/2, GAMEWIDTH, GAMEHEIGHT/2);
-
-    // ctx.fillStyle = 'black';
-    // for (let i = 0; i < roadScreenCoordinates.length; i++) {
-    //     if (roadScreenCoordinates[i][0][2] > 0) {
-    //         ctx.beginPath();
-    //         
-    //         ctx.arc(
-    //             roadScreenCoordinates[i][0][0], 
-    //             roadScreenCoordinates[i][0][1], 
-    //             10*roadScreenCoordinates[i][0][2],
-    //             0, 2*Math.PI
-    //             );
-    //         ctx.fill();
-    //     }
-    // }
 
     renderScreenPoints(roadScreenCoordinates, edges, 'grey');
     renderScreenPoints(stripeScreenCoordinates, edges, 'yellow');
