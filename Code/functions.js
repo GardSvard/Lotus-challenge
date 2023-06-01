@@ -16,12 +16,12 @@ function generateCorners(pointOriginal, cameraPosition, tangent, angle, size) {
                 vec.rotate2d(Math.PI/2);
                 x += vec.x*(size[0]/2);
                 y += vec.y*(size[0]/2);
-                corners.push(new Vector(x, y, -2));
+                corners.push(new Vector(x, y, -1));
             for (let i = 0; i < 3; i++) {
                 vec.rotate2d(Math.PI/2);
                 x += vec.x*size[!(i % 2)*1];
                 y += vec.y*size[!(i % 2)*1];
-                corners.push(new Vector(x, y, -2));
+                corners.push(new Vector(x, y, -1));
             }
 
             let cornerScreenCoordinates = [];
@@ -37,7 +37,7 @@ function generateCorners(pointOriginal, cameraPosition, tangent, angle, size) {
 function generatePoint(pointO, cameraPosition) { 
 
     let point = Vector.copy(pointO);
-    point.changeZ(-2);
+    point.changeZ(-1);
 
     let cameraToPointVector = new Vector(
         point.x - cameraPosition.x,
