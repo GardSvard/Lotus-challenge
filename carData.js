@@ -20,7 +20,12 @@ let headers = {
     'Sec-Fetch-Site': 'cross-site',
     'TE': 'trailers'
 };
-httpRequest.send();
+
+try {
+    httpRequest.send();
+} catch (error) {
+    console.log(error);
+}
 
 function handleResponse() {
     let sum = 0;

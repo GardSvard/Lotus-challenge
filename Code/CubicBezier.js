@@ -64,7 +64,7 @@ class CubicBezier {
 
 
     drawCurve() {
-        for (let t =0; t<=1; t+=0.01) {
+        for (let t=0; t<=1; t+=0.01) {
             this.getPoint(t, true);
         }
 
@@ -99,7 +99,7 @@ class CubicBezier {
     }
 
     hasPassed(position, draw=false) {
-        let margin = 5;
+        let margin = 10;
         let passed = false;
         let normal = Vector.rotate2d(this.getTangent(1), Math.PI/2);
         let point = Vector.scale(pointScalar, this.getPoint(1));

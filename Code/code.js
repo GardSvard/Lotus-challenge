@@ -5,45 +5,52 @@
 const canvasGFX = document.getElementById("canvasGFX");
 const ctx = canvasGFX.getContext("2d");
 ctx.imageSmoothingEnabled = false; //turns off antialiasing
-
+let canvasMap = document.getElementById("canvasMap");
 let ctxMap = canvasMap.getContext("2d");
 
 const WORLDSCALE = 5; //scales up from meters to pixels, lower number, more zoomed out
 const FPS = 60;
-const HZ = 1/FPS; 
+const HZ = 1 / FPS; 
 const FOV = 90;
-const FOVradians = (FOV/180)*Math.PI;
+const FOVradians = (FOV/180) * Math.PI;
 
 const WIDTH = ctxMap.canvas.width;
 const HEIGHT = ctxMap.canvas.height;
 
-const GAMEHEIGHT = ctx.canvas.height = 450;
-const GAMEWIDTH = ctx.canvas.width = 800;
+const GAMEHEIGHT = ctx.canvas.height = 1080;
+const GAMEWIDTH = ctx.canvas.width = 1920;
 
-    let aspectRatio = GAMEWIDTH/GAMEHEIGHT;
-    let cameraPosition = {
-        x: 0,
-        y: -5,
-        z: 0
-    };
-    const cameraDepth = Math.abs(cameraPosition.y);
-    const screenWidth = 
-        Math.tan(FOVradians/2)*
-        cameraDepth
-    ;
-    const screenHeight = 
-        screenWidth/aspectRatio
-    ;
-
+let aspectRatio = GAMEWIDTH/GAMEHEIGHT;
+let cameraPosition = {
+    x: 0,
+    y: -5,
+    z: 0
+};
+const cameraDepth = Math.abs(cameraPosition.y);
+const screenWidth = Math.tan(FOVradians / 2) * cameraDepth;
+const screenHeight = screenWidth / aspectRatio;
 
 let renderDistance = 500;
 let roadSegmentLength = 15; //everything is given in meters
 let roadSegmentWidth = 8;
 const pointScalar = 15;
 
+//sprites
+let carOverlayObj = new Image();
+carOverlayObj.src = "spriteSheets/carOverlay.png";
+let skyObj = new Image();
+skyObj.src = "spriteSheets/backgroundDay.png";
+
+//timer
+let timeLeft;   
+let lastTime;
+let timeNow;
+let dt;
+let score;
+
 let playerList = [];
 
-let gameState = "Menu";
+let gameState = "Cotus LurboThallenge";
 let currentOption = 0;
 
 let keyPresses = {};
@@ -93,10 +100,8 @@ let menuOptions = [
 
 let playOptions = [
     "Start",
-    ["Map", maps[0]],
-    ["Player Count", 1],
-    ["Player 1 Car", cars[0]],
-    ["player 2 Car", cars[0]],
+    // ["Map", maps[0]],
+    ["Car", cars[0]],
 ];
 
 let settingsOptions = [
@@ -121,7 +126,7 @@ let creditsOptions = [
     ["Dev 3", "Oscar"]
 ];
 
-gameStateChange("Menu");
+gameStateChange("Cotus Lurbo Thallenge");
 
 document.onkeydown = function(event) {
     if (gameState == "Game") {
